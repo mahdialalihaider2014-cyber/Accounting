@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>برنامج إدارة الحسابات</title>
+
+<style>
+body {
+    font-family: Tahoma, Arial, sans-serif;
+    background: #f3f7f9;
+    margin: 0;
+    color: #18313b;
+}
+header {
+    background: #155e75;
+    color: white;
+    padding: 20px;
+}
+main {
+    max-width: 1000px;
+    margin: auto;
+    padding: 15px;
+}
+.card {
+    background: white;
+    padding: 18px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 12px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+button {
+    background: #087f8c;
+    color: white;
+    border: 0;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 4px;
+}
+button:hover {
+    background: #155e75;
+}
+.hidden {
+    display: none;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    text-align: right;
+}
+nav {
+    display: flex;
+    flex-wrap: wrap;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>برنامج إدارة الحسابات</h1>
+<p>الحسابات وسندات الدفع والاستلام والقوائم</p>
+</header>
+
+<main>
+
+<div id="loginCard" class="card">
+<h2>تسجيل الدخول</h2>
+
+<label>البريد الإلكتروني</label>
+<input id="email" type="email">
+
+<label>كلمة المرور</label>
+<input id="password" type="password">
+
+<button id="loginBtn">دخول</button>
+<p id="loginMessage"></p>
+</div>
+
+<div id="app" class="hidden">
+
+<div class="card">
+<h2>لوحة التحكم</h2>
+<p id="welcome"></p>
+<button id="logoutBtn">تسجيل الخروج</button>
+</div>
+
+<nav>
+<button onclick="showTab('accounts')">الحسابات</button>
+<button onclick="showTab('vouchers')">السندات</button>
+<button onclick="showTab('lists')">القوائم</button>
+<button onclick="showTab('notes')">الملاحظات</button>
+</nav>
+
+<section id="accounts" class="card">
+<h2>إضافة حساب</h2>
+
+<label>اسم الحساب</label>
+<input id="accountName">
+
+<label>نوع الحساب</label>
+<select id="accountType">
+<option value="supplier">مورد</option>
+<option value="customer">عميل</option>
+<option value="source">مصدر</option>
+<option value="cash">صندوق نقدي</option>
+<option value="bank">مصرف</option>
+<option value="expense">مصروفات</option>
+</select>
+
+<label>رقم الهاتف</label>
+<input id="accountPhone">
+
+<label>الرصيد الافتتاحي</label>
+<input id="accountBalance" type="number" value="0">
+
+<label>ملاحظات</label>
+<textarea id="accountNotes"></textarea>
+
+<button id="saveAccount">حفظ الحساب</button>
+
+<h3>الحسابات المسجلة</h3>
+
+<table>
+<thead>
+<tr>
+<th>اسم الحساب</th>
+<th>النوع</th>
+<th>الرصيد الافتتاحي</th>
+</tr>
+</thead>
+<tbody id="accountsTable"></tbody>
+</table>
+</section>
+
+<section id="vouchers" class="card hidden">
+
+<h2>سند دفع أو استلام</h2>
+
+<label>نوع السند</label>
+<select id="voucherType">
+<option value="receipt">سند استلام</option>
+<option value="payment">سند دفع</option>
+</select>
+
+<label>الحساب</label>
+<select id="voucherAccount"></select>
+
+<label>التاريخ</label>
+<input id="voucherDate" type="date">
+
+<label>المبلغ</label>
+<input id="voucherAmount" type="number">
+
+<label>طريقة الدفع</label>
+<select id="voucherMethod">
+<option>نقداً</option>
+<option>تحويل مصرفي</option>
+<option>صك</option>
+<option>أخرى</option>
+</select>
+
+<label>البيان</label>
+<input id="voucherDescription">
+
+<label>ملاحظات</label>
+<textarea id="voucherNotes"></textarea>
+
+<button id="saveVoucher">حفظ السند</button>
+
+<h3>السندات المسجلة</h3>
+
+<table>
+<thead>
+<tr>
+<th>النوع</th>
+<th>الحساب</th>
+<th>المبلغ</th>
+<th>التاريخ</th>
+</tr>
+</thead>
+<tbody id="vouchersTable"></tbody>
+</table>
+
+</section>
+
+<section id="lists" class="card hidden">
+
+<h2>القوائم الواردة والصادرة والاسترجاع</h2>
+
+<label>نوع القائمة</label>
+<select id="listType">
+<option value="incoming">قائمة واردة</option>
+<option value="outgoing">قائمة صادرة</option>
+<option value="return">قائمة استرجاع</option>
+</select>
+
+<label>رقم القائمة</label>
+<input id="listNumber">
+
+<label>الحساب</label>
+<select id="listAccount"></select>
+
+<label>التاريخ</label>
+<input id="listDate" type="date">
+
+<label>المبلغ</label>
+<input id="listAmount" type="number">
+
+<label>البيان</label>
+<input id="listDescription">
+
+<label>ملاحظات</label>
+<textarea id="listNotes"></textarea>
+
+<button id="saveList">حفظ القائمة</button>
+
+<h3>القوائم المسجلة</h3>
+
+<table>
+<thead>
+<tr>
+<th>رقم القائمة</th>
+<th>النوع</th>
+<th>الحساب</th>
+<th>المبلغ</th>
+</tr>
+</thead>
+<tbody id="listsTable"></tbody>
+</table>
+
+</section>
+
+<section id="notes" class="card hidden">
+
+<h2>الملاحظات</h2>
+
+<label>عنوان الملاحظة</label>
+<input id="noteTitle">
+
+<label>الملاحظة</label>
+<textarea id="noteText"></textarea>
+
+<button id="saveNote">حفظ الملاحظة</button>
+
+<ul id="notesList"></ul>
+
+</section>
+
+</div>
+</main>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs,
+doc,
+getDoc,
+query,
+orderBy,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAofpz2I1UrRacIzbrdotoVzS_XGOps7_c",
+  authDomain: "accounting-management-6299b.firebaseapp.com",
+  projectId: "accounting-management-6299b",
+  storageBucket: "accounting-management-6299b.firebasestorage.app",
+  messagingSenderId: "649827957105",
+  appId: "1:649827957105:web:3980801b3c8390c55c9ed0"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let accounts = [];
+
+window.showTab = function(id) {
+    ["accounts","vouchers","lists","notes"].forEach(x => {
+        document.getElementById(x).classList.toggle("hidden", x !== id);
+    });
+};
+
+document.getElementById("loginBtn").onclick = async () => {
+    try {
+        await signInWithEmailAndPassword(
+            auth,
+            document.getElementById("email").value,
+            document.getElementById("password").value
+        );
+    } catch(error) {
+        document.getElementById("loginMessage").textContent = error.message;
+    }
+};
+
+document.getElementById("logoutBtn").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, async user => {
+
+    currentUser = user;
+
+    document.getElementById("loginCard").classList.toggle("hidden", !!user);
+    document.getElementById("app").classList.toggle("hidden", !user);
+
+    if (!user) return;
+
+    document.getElementById("welcome").textContent = user.email;
+
+    try {
+        const profile = await getDoc(doc(db,"users",user.uid));
+
+        if (!profile.exists() || profile.data().approved !== true) {
+            await signOut(auth);
+            document.getElementById("loginMessage").textContent =
+                "الحساب غير معتمد من المدير.";
+            return;
+        }
+
+        await loadAccounts();
+        await loadVouchers();
+        await loadLists();
+        await loadNotes();
+
+    } catch(error) {
+        alert("خطأ في Firebase: " + error.message);
+    }
+});
+
+async function loadAccounts() {
+
+    const snapshot = await getDocs(collection(db,"accounts"));
+
+    accounts = [];
+
+    snapshot.forEach(d => {
+        accounts.push({id:d.id,...d.data()});
+    });
+
+    document.getElementById("accountsTable").innerHTML = "";
+
+    accounts.forEach(a => {
+
+        document.getElementById("accountsTable").innerHTML += `
+        <tr>
+        <td>${a.name}</td>
+        <td>${a.type}</td>
+        <td>${a.balance || 0}</td>
+        </tr>`;
+
+    });
+
+    const options = accounts.map(a =>
+        `<option value="${a.id}">${a.name}</option>`
+    ).join("");
+
+    document.getElementById("voucherAccount").innerHTML = options;
+    document.getElementById("listAccount").innerHTML = options;
+}
+
+document.getElementById("saveAccount").onclick = async () => {
+
+    const name = document.getElementById("accountName").value.trim();
+
+    if (!name) {
+        alert("أدخل اسم الحساب");
+        return;
+    }
+
+    await addDoc(collection(db,"accounts"), {
+        name,
+        type: document.getElementById("accountType").value,
+        phone: document.getElementById("accountPhone").value,
+        balance: Number(document.getElementById("accountBalance").value || 0),
+        notes: document.getElementById("accountNotes").value,
+        createdBy: currentUser.uid,
+        createdAt: serverTimestamp()
+    });
+
+    alert("تم حفظ الحساب");
+
+    await loadAccounts();
+};
+
+document.getElementById("saveVoucher").onclick = async () => {
+
+    const amount = Number(document.getElementById("voucherAmount").value);
+
+    if (amount <= 0) {
+        alert("أدخل مبلغاً صحيحاً");
+        return;
+    }
+
+    const accountId = document.getElementById("voucherAccount").value;
+    const account = accounts.find(a => a.id === accountId);
+
+    await addDoc(collection(db,"vouchers"), {
+        type: document.getElementById("voucherType").value,
+        accountId,
+        accountName: account?.name || "",
+        date: document.getElementById("voucherDate").value,
+        amount,
+        method: document.getElementById("voucherMethod").value,
+        description: document.getElementById("voucherDescription").value,
+        notes: document.getElementById("voucherNotes").value,
+        createdBy: currentUser.uid,
+        createdAt: serverTimestamp()
+    });
+
+    alert("تم حفظ السند");
+    await loadVouchers();
+};
+
+async function loadVouchers() {
+
+    const snapshot = await getDocs(collection(db,"vouchers"));
+
+    document.getElementById("vouchersTable").innerHTML = "";
+
+    snapshot.forEach(d => {
+        const v = d.data();
+
+        document.getElementById("vouchersTable").innerHTML += `
+        <tr>
+        <td>${v.type === "receipt" ? "استلام" : "دفع"}</td>
+        <td>${v.accountName}</td>
+        <td>${v.amount}</td>
+        <td>${v.date || ""}</td>
+        </tr>`;
+    });
+}
+
+document.getElementById("saveList").onclick = async () => {
+
+    const number = document.getElementById("listNumber").value.trim();
+
+    if (!number) {
+        alert("أدخل رقم القائمة");
+        return;
+    }
+
+    const accountId = document.getElementById("listAccount").value;
+    const account = accounts.find(a => a.id === accountId);
+
+    await addDoc(collection(db,"lists"), {
+        type: document.getElementById("listType").value,
+        number,
+        accountId,
+        accountName: account?.name || "",
+        date: document.getElementById("listDate").value,
+        amount: Number(document.getElementById("listAmount").value || 0),
+        description: document.getElementById("listDescription").value,
+        notes: document.getElementById("listNotes").value,
+        createdBy: currentUser.uid,
+        createdAt: serverTimestamp()
+    });
+
+    alert("تم حفظ القائمة");
+    await loadLists();
+};
+
+async function loadLists() {
+
+    const snapshot = await getDocs(collection(db,"lists"));
+
+    document.getElementById("listsTable").innerHTML = "";
+
+    snapshot.forEach(d => {
+        const l = d.data();
+
+        document.getElementById("listsTable").innerHTML += `
+        <tr>
+        <td>${l.number}</td>
+        <td>${l.type}</td>
+        <td>${l.accountName || ""}</td>
+        <td>${l.amount || 0}</td>
+        </tr>`;
+    });
+}
+
+document.getElementById("saveNote").onclick = async () => {
+
+    await addDoc(collection(db,"notes"), {
+        title: document.getElementById("noteTitle").value,
+        body: document.getElementById("noteText").value,
+        createdBy: currentUser.uid,
+        createdAt: serverTimestamp()
+    });
+
+    alert("تم حفظ الملاحظة");
+    await loadNotes();
+};
+
+async function loadNotes() {
+
+    const snapshot = await getDocs(collection(db,"notes"));
+
+    document.getElementById("notesList").innerHTML = "";
+
+    snapshot.forEach(d => {
+        const n = d.data();
+
+        document.getElementById("notesList").innerHTML +=
+        `<li><strong>${n.title || ""}</strong> — ${n.body || ""}</li>`;
+    });
+}
+
+</script>
+</body>
+</html>
