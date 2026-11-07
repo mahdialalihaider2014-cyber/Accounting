@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>برنامج إدارة الحسابات</title>
+<title>برنامج إدارة حسابات الصيدلية</title>
+
 <style>
 :root {
     --primary: #087f8c;
@@ -11,9 +13,8 @@
     --bg: #f3f7f9;
     --text: #18313b;
 }
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+
 body {
     font-family: Tahoma, Arial, sans-serif;
     background: var(--bg);
@@ -47,9 +48,8 @@ input, select, textarea {
     font-family: inherit;
     font-size: 15px;
 }
-textarea {
-    min-height: 80px;
-}
+textarea { min-height: 80px; }
+
 button {
     background: var(--primary);
     color: white;
@@ -60,24 +60,17 @@ button {
     margin: 4px;
     font-family: inherit;
 }
-button:hover {
-    background: var(--dark);
-}
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-.hidden {
-    display: none !important;
-}
+button:hover { background: var(--dark); }
+button:disabled { opacity: .6; cursor: not-allowed; }
+.hidden { display: none !important; }
+
 nav {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 12px;
 }
-.table-wrap {
-    overflow-x: auto;
-}
+.table-wrap { overflow-x: auto; }
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -88,75 +81,115 @@ th, td {
     padding: 10px;
     text-align: right;
 }
-th {
-    background: #f0f6f8;
-}
+th { background: #f0f6f8; }
+
 .message {
     color: #b42318;
     font-weight: bold;
     white-space: pre-wrap;
 }
-.success {
-    color: #087f46;
+.success { color: #087f46; }
+label { font-weight: bold; }
+
+.badge {
+    display: inline-block;
+    background: #fff3cd;
+    color: #856404;
+    padding: 5px 10px;
+    border-radius: 6px;
 }
-label {
-    font-weight: bold;
-}
+
 @media (max-width: 600px) {
-    header {
-        padding: 12px;
-    }
-    h1 {
-        font-size: 23px;
-    }
-    .card {
-        padding: 12px;
-    }
-    button {
-        width: 100%;
-        margin: 4px 0;
-    }
+    header { padding: 12px; }
+    h1 { font-size: 23px; }
+    .card { padding: 12px; }
+    button { width: 100%; margin: 4px 0; }
 }
 </style>
 </head>
+
 <body>
+
 <header>
-    <h1>برنامج إدارة الحسابات</h1>
+    <h1>برنامج إدارة حسابات الصيدلية</h1>
     <p>الحسابات وسندات الدفع والاستلام والقوائم</p>
 </header>
+
 <main>
+
 <!-- تسجيل الدخول -->
 <div id="loginCard" class="card">
     <h2>تسجيل الدخول</h2>
+
     <label for="email">البريد الإلكتروني</label>
     <input id="email" type="email"
            placeholder="أدخل البريد الإلكتروني"
            autocomplete="username">
+
     <label for="password">كلمة المرور</label>
     <input id="password" type="password"
            placeholder="أدخل كلمة المرور"
            autocomplete="current-password">
+
     <button id="loginBtn">دخول</button>
     <p id="loginMessage" class="message"></p>
 </div>
+
+<!-- انتظار موافقة المدير -->
+<div id="pendingCard" class="card hidden">
+    <h2>الحساب بانتظار الموافقة</h2>
+    <p>تم إنشاء ملف المستخدم بنجاح، لكن المدير لم يعتمد الحساب بعد.</p>
+    <p>يرجى التواصل مع مدير النظام.</p>
+    <button id="pendingLogoutBtn">تسجيل الخروج</button>
+</div>
+
 <!-- التطبيق -->
 <div id="app" class="hidden">
+
     <div class="card">
         <h2>لوحة التحكم</h2>
         <p>مرحباً: <span id="welcome"></span></p>
+        <p>الصلاحية: <span id="userRole"></span></p>
+
         <button id="logoutBtn">تسجيل الخروج</button>
     </div>
+
+    <!-- قسم المدير -->
+    <div id="adminCard" class="card hidden">
+        <h2>إدارة الموظفين</h2>
+        <p>يمكن للمدير اعتماد الموظفين المسجلين.</p>
+        <button id="refreshUsersBtn">تحديث قائمة الموظفين</button>
+        <p id="usersMessage" class="message"></p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>البريد الإلكتروني</th>
+                        <th>الصلاحية</th>
+                        <th>الحالة</th>
+                        <th>الإجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable"></tbody>
+            </table>
+        </div>
+    </div>
+
     <nav>
         <button onclick="showTab('accounts')">الحسابات</button>
         <button onclick="showTab('vouchers')">السندات</button>
         <button onclick="showTab('lists')">القوائم</button>
         <button onclick="showTab('notes')">الملاحظات</button>
     </nav>
+
     <!-- الحسابات -->
     <section id="accounts" class="card">
         <h2>إضافة حساب</h2>
+
         <label>اسم الحساب</label>
         <input id="accountName" placeholder="اسم العميل أو المورد">
+
         <label>نوع الحساب</label>
         <select id="accountType">
             <option value="supplier">مورد</option>
@@ -167,13 +200,18 @@ label {
             <option value="expense">مصروفات</option>
             <option value="other">أخرى</option>
         </select>
+
         <label>رقم الهاتف</label>
         <input id="accountPhone" type="tel">
+
         <label>الرصيد الافتتاحي</label>
         <input id="accountBalance" type="number" value="0">
+
         <label>ملاحظات</label>
         <textarea id="accountNotes"></textarea>
+
         <button id="saveAccount">حفظ الحساب</button>
+
         <h3>الحسابات المسجلة</h3>
         <div class="table-wrap">
             <table>
@@ -189,20 +227,26 @@ label {
             </table>
         </div>
     </section>
+
     <!-- السندات -->
     <section id="vouchers" class="card hidden">
         <h2>سند دفع أو استلام</h2>
+
         <label>نوع السند</label>
         <select id="voucherType">
             <option value="receipt">سند استلام</option>
             <option value="payment">سند دفع</option>
         </select>
+
         <label>الحساب</label>
         <select id="voucherAccount"></select>
+
         <label>التاريخ</label>
         <input id="voucherDate" type="date">
+
         <label>المبلغ</label>
         <input id="voucherAmount" type="number" min="0.01" step="0.01">
+
         <label>طريقة الدفع</label>
         <select id="voucherMethod">
             <option>نقداً</option>
@@ -210,11 +254,15 @@ label {
             <option>صك</option>
             <option>أخرى</option>
         </select>
+
         <label>البيان</label>
         <input id="voucherDescription">
+
         <label>ملاحظات</label>
         <textarea id="voucherNotes"></textarea>
+
         <button id="saveVoucher">حفظ السند</button>
+
         <h3>السندات المسجلة</h3>
         <div class="table-wrap">
             <table>
@@ -231,28 +279,38 @@ label {
             </table>
         </div>
     </section>
+
     <!-- القوائم -->
     <section id="lists" class="card hidden">
         <h2>القوائم الواردة والصادرة والاسترجاع</h2>
+
         <label>نوع القائمة</label>
         <select id="listType">
             <option value="incoming">قائمة واردة</option>
             <option value="outgoing">قائمة صادرة</option>
             <option value="return">قائمة استرجاع</option>
         </select>
+
         <label>رقم القائمة</label>
         <input id="listNumber">
+
         <label>الحساب</label>
         <select id="listAccount"></select>
+
         <label>التاريخ</label>
         <input id="listDate" type="date">
+
         <label>المبلغ</label>
         <input id="listAmount" type="number" min="0" step="0.01">
+
         <label>البيان</label>
         <input id="listDescription">
+
         <label>ملاحظات</label>
         <textarea id="listNotes"></textarea>
+
         <button id="saveList">حفظ القائمة</button>
+
         <h3>القوائم المسجلة</h3>
         <div class="table-wrap">
             <table>
@@ -269,22 +327,31 @@ label {
             </table>
         </div>
     </section>
+
     <!-- الملاحظات -->
     <section id="notes" class="card hidden">
         <h2>الملاحظات</h2>
+
         <label>عنوان الملاحظة</label>
         <input id="noteTitle">
+
         <label>الملاحظة</label>
         <textarea id="noteText"></textarea>
+
         <button id="saveNote">حفظ الملاحظة</button>
+
         <h3>الملاحظات المسجلة</h3>
         <ul id="notesList"></ul>
     </section>
+
 </div>
 </main>
+
 <script type="module">
+
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
     getAuth,
     signInWithEmailAndPassword,
@@ -292,6 +359,7 @@ import {
     signOut
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 import {
     getFirestore,
     collection,
@@ -299,9 +367,12 @@ import {
     getDocs,
     doc,
     getDoc,
+    setDoc,
+    updateDoc,
     serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 /* إعدادات Firebase */
 const firebaseConfig = {
     apiKey: "AIzaSyAofpz2I1UrRacIzbrdotoVzS_XGOps7_c",
@@ -311,16 +382,25 @@ const firebaseConfig = {
     messagingSenderId: "649827957105",
     appId: "1:649827957105:web:3980801b3c8390c55c9ed0"
 };
+
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
+
+/* إعدادات المدير */
+const ADMIN_EMAIL = "mahdialalihaider2014@gmail.com";
+
 /* متغيرات التطبيق */
 let currentUser = null;
+let currentProfile = null;
 let accounts = [];
+let loadingUser = false;
+
 /* أدوات مساعدة */
 function el(id) {
     return document.getElementById(id);
 }
+
 function escapeHTML(value) {
     return String(value ?? "").replace(/[&<>"']/g, char => ({
         "&": "&amp;",
@@ -330,54 +410,56 @@ function escapeHTML(value) {
         "'": "&#39;"
     }[char]));
 }
+
 function showMessage(message, success = false) {
     el("loginMessage").textContent = message;
     el("loginMessage").className = success
         ? "message success"
         : "message";
 }
+
 function setToday(inputId) {
     const today = new Date();
     const localDate = new Date(
         today.getTime() - today.getTimezoneOffset() * 60000
     ).toISOString().slice(0, 10);
+
     el(inputId).value = localDate;
 }
+
 setToday("voucherDate");
 setToday("listDate");
+
 /* تبديل الصفحات */
 window.showTab = function(id) {
     ["accounts", "vouchers", "lists", "notes"].forEach(tab => {
         el(tab).classList.toggle("hidden", tab !== id);
     });
 };
+
 /* تسجيل الدخول */
 el("loginBtn").onclick = async () => {
     const email = el("email").value.trim();
     const password = el("password").value;
     const button = el("loginBtn");
+
     if (!email || !password) {
         showMessage("يرجى إدخال البريد الإلكتروني وكلمة المرور.");
         return;
     }
+
     button.disabled = true;
     showMessage("جارٍ تسجيل الدخول...", true);
+
     try {
-        await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
+        await signInWithEmailAndPassword(auth, email, password);
         showMessage("");
     } catch (error) {
-        console.error(
-            "Firebase Login Error:",
-            error.code,
-            error.message
-        );
+        console.error("Login error:", error.code, error.message);
+
         const messages = {
             "auth/invalid-credential":
-                "البريد الإلكتروني أو كلمة المرور غير صحيحة. تحقق من البيانات.",
+                "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
             "auth/wrong-password":
                 "كلمة المرور غير صحيحة.",
             "auth/user-not-found":
@@ -385,112 +467,284 @@ el("loginBtn").onclick = async () => {
             "auth/invalid-email":
                 "صيغة البريد الإلكتروني غير صحيحة.",
             "auth/too-many-requests":
-                "محاولات تسجيل كثيرة. انتظر قليلًا ثم حاول مجددًا.",
+                "محاولات تسجيل كثيرة. انتظر قليلًا.",
             "auth/network-request-failed":
-                "تعذر الاتصال بالإنترنت. تحقق من اتصالك.",
+                "تعذر الاتصال بالإنترنت.",
             "auth/operation-not-allowed":
-                "تسجيل الدخول بالبريد وكلمة المرور غير مفعّل في Firebase.",
+                "تسجيل الدخول بالبريد وكلمة المرور غير مفعّل.",
             "auth/unauthorized-domain":
-                "عنوان الموقع غير مسموح به في إعدادات Firebase."
+                "عنوان الموقع غير مسموح به في Firebase."
         };
-        showMessage(
-            messages[error.code] ||
-            "حدث خطأ: " + error.code + " — " + error.message
-        );
+
+        showMessage(messages[error.code] ||
+            "حدث خطأ: " + error.code + " — " + error.message);
     } finally {
         button.disabled = false;
     }
 };
+
 /* تسجيل الخروج */
-el("logoutBtn").onclick = async () => {
+async function logoutUser() {
     try {
         await signOut(auth);
     } catch (error) {
         alert("تعذر تسجيل الخروج: " + error.message);
     }
-};
+}
+
+el("logoutBtn").onclick = logoutUser;
+el("pendingLogoutBtn").onclick = logoutUser;
+
+/* إنشاء ملف المستخدم تلقائياً */
+async function createOrLoadUserProfile(user) {
+    const userRef = doc(db, "users", user.uid);
+    const email = (user.email || "").trim().toLowerCase();
+    const isAdmin = email === ADMIN_EMAIL.toLowerCase();
+
+    const snapshot = await getDoc(userRef);
+
+    if (isAdmin) {
+        const adminProfile = {
+            email: user.email || "",
+            name: user.displayName || "مدير النظام",
+            role: "admin",
+            approved: true,
+            updatedAt: serverTimestamp()
+        };
+
+        if (!snapshot.exists()) {
+            adminProfile.createdAt = serverTimestamp();
+        }
+
+        await setDoc(userRef, adminProfile, { merge: true });
+
+        return {
+            email: user.email || "",
+            name: user.displayName || "مدير النظام",
+            role: "admin",
+            approved: true
+        };
+    }
+
+    if (!snapshot.exists()) {
+        const employeeProfile = {
+            email: user.email || "",
+            name: user.displayName || "",
+            role: "employee",
+            approved: false,
+            createdAt: serverTimestamp()
+        };
+
+        await setDoc(userRef, employeeProfile);
+
+        return employeeProfile;
+    }
+
+    return snapshot.data();
+}
+
 /* مراقبة حالة تسجيل الدخول */
 onAuthStateChanged(auth, async user => {
+    if (loadingUser) return;
+    loadingUser = true;
+
     currentUser = user;
+    currentProfile = null;
+
     el("loginCard").classList.toggle("hidden", !!user);
-    el("app").classList.toggle("hidden", !user);
+    el("app").classList.add("hidden");
+    el("pendingCard").classList.add("hidden");
+    el("adminCard").classList.add("hidden");
+
     if (!user) {
+        loadingUser = false;
         return;
     }
+
     el("welcome").textContent = user.email || "";
+
     try {
-        const profile = await getDoc(
-            doc(db, "users", user.uid)
-        );
-        if (!profile.exists()) {
-            await signOut(auth);
-            showMessage(
-                "لم يتم إنشاء ملف لهذا المستخدم في مجموعة users."
-            );
+        currentProfile = await createOrLoadUserProfile(user);
+
+        if (currentProfile.approved !== true) {
+            el("pendingCard").classList.remove("hidden");
+            loadingUser = false;
             return;
         }
-        if (profile.data().approved !== true) {
-            await signOut(auth);
-            showMessage(
-                "الحساب غير معتمد من المدير."
-            );
-            return;
+
+        el("app").classList.remove("hidden");
+
+        const isAdmin =
+            (user.email || "").toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+        el("userRole").textContent = isAdmin ? "مدير" : "موظف";
+
+        if (isAdmin) {
+            el("adminCard").classList.remove("hidden");
+            await loadUsers();
         }
+
         await loadAccounts();
         await loadVouchers();
         await loadLists();
         await loadNotes();
+
     } catch (error) {
         console.error("Firebase App Error:", error);
-        alert(
-            "حدث خطأ أثناء تحميل البيانات:\n" +
-            error.code + "\n" +
-            error.message
+
+        el("app").classList.add("hidden");
+        el("pendingCard").classList.add("hidden");
+
+        showMessage(
+            "تعذر إنشاء أو تحميل ملف المستخدم.\n" +
+            "رمز الخطأ: " + (error.code || "unknown") +
+            "\nالتفاصيل: " + error.message
         );
+    } finally {
+        loadingUser = false;
     }
 });
+
+/* إدارة الموظفين - للمدير فقط */
+async function loadUsers() {
+    if (!currentUser ||
+        (currentUser.email || "").toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        return;
+    }
+
+    el("usersMessage").textContent = "جارٍ تحميل الموظفين...";
+    el("usersTable").innerHTML = "";
+
+    try {
+        const snapshot = await getDocs(collection(db, "users"));
+
+        snapshot.forEach(userDoc => {
+            const u = userDoc.data();
+            const uid = userDoc.id;
+
+            if ((u.email || "").toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                return;
+            }
+
+            const row = document.createElement("tr");
+
+            const status = u.approved === true
+                ? "معتمد"
+                : "بانتظار الموافقة";
+
+            const action = u.approved === true
+                ? `<button data-uid="${escapeHTML(uid)}" data-action="disable">إلغاء الاعتماد</button>`
+                : `<button data-uid="${escapeHTML(uid)}" data-action="approve">اعتماد الموظف</button>`;
+
+            row.innerHTML = `
+                <td>${escapeHTML(u.email || "")}</td>
+                <td>${escapeHTML(u.role || "employee")}</td>
+                <td>${status}</td>
+                <td>${action}</td>
+            `;
+
+            el("usersTable").appendChild(row);
+        });
+
+        el("usersMessage").textContent = "تم تحميل قائمة الموظفين.";
+        el("usersMessage").className = "message success";
+
+    } catch (error) {
+        el("usersMessage").textContent =
+            "تعذر تحميل الموظفين: " + error.message;
+    }
+}
+
+el("refreshUsersBtn").onclick = loadUsers;
+
+el("usersTable").addEventListener("click", async event => {
+    const button = event.target.closest("button[data-uid]");
+    if (!button) return;
+
+    if (!currentUser ||
+        (currentUser.email || "").toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        alert("هذه العملية للمدير فقط.");
+        return;
+    }
+
+    const uid = button.dataset.uid;
+    const action = button.dataset.action;
+    const approved = action === "approve";
+
+    if (!confirm(approved
+        ? "هل تريد اعتماد هذا الموظف؟"
+        : "هل تريد إلغاء اعتماد هذا الموظف؟")) {
+        return;
+    }
+
+    button.disabled = true;
+
+    try {
+        await updateDoc(doc(db, "users", uid), {
+            approved,
+            updatedAt: serverTimestamp()
+        });
+
+        alert(approved ? "تم اعتماد الموظف." : "تم إلغاء اعتماد الموظف.");
+        await loadUsers();
+
+    } catch (error) {
+        alert("تعذر تعديل صلاحية الموظف:\n" + error.message);
+    } finally {
+        button.disabled = false;
+    }
+});
+
 /* تحميل الحسابات */
 async function loadAccounts() {
-    const snapshot = await getDocs(
-        collection(db, "accounts")
-    );
+    const snapshot = await getDocs(collection(db, "accounts"));
+
     accounts = [];
+
     snapshot.forEach(d => {
-        accounts.push({
-            id: d.id,
-            ...d.data()
-        });
+        accounts.push({ id: d.id, ...d.data() });
     });
+
     el("accountsTable").innerHTML = "";
+
     accounts.forEach(a => {
         const row = document.createElement("tr");
+
         row.innerHTML = `
             <td>${escapeHTML(a.name)}</td>
             <td>${escapeHTML(a.type)}</td>
             <td>${escapeHTML(a.phone || "")}</td>
             <td>${escapeHTML(a.balance || 0)}</td>
         `;
+
         el("accountsTable").appendChild(row);
     });
+
     const options = accounts.map(a =>
         `<option value="${escapeHTML(a.id)}">${escapeHTML(a.name)}</option>`
     ).join("");
+
     el("voucherAccount").innerHTML = options;
     el("listAccount").innerHTML = options;
 }
+
 /* حفظ الحساب */
 el("saveAccount").onclick = async () => {
     if (!currentUser) {
         alert("يرجى تسجيل الدخول.");
         return;
     }
+
     const name = el("accountName").value.trim();
+
     if (!name) {
         alert("أدخل اسم الحساب.");
         return;
     }
+
     const button = el("saveAccount");
     button.disabled = true;
+
     try {
         await addDoc(collection(db, "accounts"), {
             name,
@@ -501,37 +755,48 @@ el("saveAccount").onclick = async () => {
             createdBy: currentUser.uid,
             createdAt: serverTimestamp()
         });
+
         alert("تم حفظ الحساب بنجاح.");
+
         el("accountName").value = "";
         el("accountPhone").value = "";
         el("accountBalance").value = "0";
         el("accountNotes").value = "";
+
         await loadAccounts();
+
     } catch (error) {
         alert("تعذر حفظ الحساب:\n" + error.message);
     } finally {
         button.disabled = false;
     }
 };
+
 /* حفظ السند */
 el("saveVoucher").onclick = async () => {
     if (!currentUser) {
         alert("يرجى تسجيل الدخول.");
         return;
     }
+
     const amount = Number(el("voucherAmount").value);
+
     if (!Number.isFinite(amount) || amount <= 0) {
         alert("أدخل مبلغاً صحيحاً.");
         return;
     }
+
     const accountId = el("voucherAccount").value;
+
     if (!accountId) {
         alert("أنشئ حساباً أولاً.");
         return;
     }
+
     const account = accounts.find(a => a.id === accountId);
     const button = el("saveVoucher");
     button.disabled = true;
+
     try {
         await addDoc(collection(db, "vouchers"), {
             type: el("voucherType").value,
@@ -545,26 +810,32 @@ el("saveVoucher").onclick = async () => {
             createdBy: currentUser.uid,
             createdAt: serverTimestamp()
         });
+
         alert("تم حفظ السند بنجاح.");
+
         el("voucherAmount").value = "";
         el("voucherDescription").value = "";
         el("voucherNotes").value = "";
+
         await loadVouchers();
+
     } catch (error) {
         alert("تعذر حفظ السند:\n" + error.message);
     } finally {
         button.disabled = false;
     }
 };
+
 /* تحميل السندات */
 async function loadVouchers() {
-    const snapshot = await getDocs(
-        collection(db, "vouchers")
-    );
+    const snapshot = await getDocs(collection(db, "vouchers"));
+
     el("vouchersTable").innerHTML = "";
+
     snapshot.forEach(d => {
         const v = d.data();
         const row = document.createElement("tr");
+
         row.innerHTML = `
             <td>${v.type === "receipt" ? "استلام" : "دفع"}</td>
             <td>${escapeHTML(v.accountName || "")}</td>
@@ -572,33 +843,43 @@ async function loadVouchers() {
             <td>${escapeHTML(v.date || "")}</td>
             <td>${escapeHTML(v.description || "")}</td>
         `;
+
         el("vouchersTable").appendChild(row);
     });
 }
+
 /* حفظ القائمة */
 el("saveList").onclick = async () => {
     if (!currentUser) {
         alert("يرجى تسجيل الدخول.");
         return;
     }
+
     const number = el("listNumber").value.trim();
+
     if (!number) {
         alert("أدخل رقم القائمة.");
         return;
     }
+
     const accountId = el("listAccount").value;
+
     if (!accountId) {
         alert("أنشئ حساباً أولاً.");
         return;
     }
+
     const account = accounts.find(a => a.id === accountId);
     const amount = Number(el("listAmount").value || 0);
+
     if (!Number.isFinite(amount) || amount < 0) {
         alert("أدخل مبلغاً صحيحاً.");
         return;
     }
+
     const button = el("saveList");
     button.disabled = true;
+
     try {
         await addDoc(collection(db, "lists"), {
             type: el("listType").value,
@@ -612,32 +893,40 @@ el("saveList").onclick = async () => {
             createdBy: currentUser.uid,
             createdAt: serverTimestamp()
         });
+
         alert("تم حفظ القائمة بنجاح.");
+
         el("listNumber").value = "";
         el("listAmount").value = "";
         el("listDescription").value = "";
         el("listNotes").value = "";
+
         await loadLists();
+
     } catch (error) {
         alert("تعذر حفظ القائمة:\n" + error.message);
     } finally {
         button.disabled = false;
     }
 };
+
 /* تحميل القوائم */
 async function loadLists() {
-    const snapshot = await getDocs(
-        collection(db, "lists")
-    );
+    const snapshot = await getDocs(collection(db, "lists"));
+
     el("listsTable").innerHTML = "";
+
     snapshot.forEach(d => {
         const l = d.data();
+
         const types = {
             incoming: "واردة",
             outgoing: "صادرة",
             return: "استرجاع"
         };
+
         const row = document.createElement("tr");
+
         row.innerHTML = `
             <td>${escapeHTML(l.number || "")}</td>
             <td>${types[l.type] || escapeHTML(l.type || "")}</td>
@@ -645,23 +934,29 @@ async function loadLists() {
             <td>${escapeHTML(l.amount || 0)}</td>
             <td>${escapeHTML(l.date || "")}</td>
         `;
+
         el("listsTable").appendChild(row);
     });
 }
+
 /* حفظ الملاحظة */
 el("saveNote").onclick = async () => {
     if (!currentUser) {
         alert("يرجى تسجيل الدخول.");
         return;
     }
+
     const title = el("noteTitle").value.trim();
     const body = el("noteText").value.trim();
+
     if (!title && !body) {
         alert("أدخل عنوان الملاحظة أو نصها.");
         return;
     }
+
     const button = el("saveNote");
     button.disabled = true;
+
     try {
         await addDoc(collection(db, "notes"), {
             title,
@@ -669,32 +964,40 @@ el("saveNote").onclick = async () => {
             createdBy: currentUser.uid,
             createdAt: serverTimestamp()
         });
+
         alert("تم حفظ الملاحظة بنجاح.");
+
         el("noteTitle").value = "";
         el("noteText").value = "";
+
         await loadNotes();
+
     } catch (error) {
         alert("تعذر حفظ الملاحظة:\n" + error.message);
     } finally {
         button.disabled = false;
     }
 };
+
 /* تحميل الملاحظات */
 async function loadNotes() {
-    const snapshot = await getDocs(
-        collection(db, "notes")
-    );
+    const snapshot = await getDocs(collection(db, "notes"));
+
     el("notesList").innerHTML = "";
+
     snapshot.forEach(d => {
         const n = d.data();
         const li = document.createElement("li");
+
         li.innerHTML = `
             <strong>${escapeHTML(n.title || "")}</strong>
             — ${escapeHTML(n.body || "")}
         `;
+
         el("notesList").appendChild(li);
     });
 }
+
 </script>
 </body>
 </html>
