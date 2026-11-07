@@ -8,19 +8,18 @@
 
 <style>
 :root{
- --primary:#087f8c;
- --dark:#155e75;
- --bg:#f3f7f9;
- --text:#18313b;
- --danger:#b42318;
- --success:#087f46;
+--primary:#087f8c;
+--dark:#155e75;
+--bg:#f3f7f9;
+--danger:#b42318;
+--success:#087f46;
 }
 *{box-sizing:border-box}
-body{font-family:Tahoma,Arial,sans-serif;background:var(--bg);margin:0;color:var(--text)}
+body{font-family:Tahoma,Arial;background:var(--bg);margin:0;color:#18313b}
 header{background:var(--dark);color:white;text-align:center;padding:18px}
 main{max-width:1200px;margin:auto;padding:15px}
-.card{background:white;padding:18px;margin-bottom:15px;border-radius:12px;box-shadow:0 2px 8px #0000000d}
-input,select,textarea{width:100%;padding:11px;margin:5px 0 12px;border:1px solid #ccc;border-radius:8px;font:15px Tahoma}
+.card{background:white;padding:18px;margin-bottom:15px;border-radius:12px;box-shadow:0 2px 8px #0001}
+input,select,textarea{width:100%;padding:11px;margin:6px 0 12px;border:1px solid #ccc;border-radius:8px;font:15px Tahoma}
 textarea{min-height:70px}
 button{background:var(--primary);color:white;border:0;padding:11px 15px;border-radius:8px;cursor:pointer;margin:4px;font-family:inherit}
 button:hover{background:var(--dark)}
@@ -36,18 +35,17 @@ th{background:#f0f6f8}
 label{font-weight:bold}
 .message{white-space:pre-wrap;color:var(--danger);font-weight:bold}
 .success{color:var(--success)}
-.small{font-size:13px;color:#52636b}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
 .grid label{font-weight:normal;background:#f6fafb;padding:9px;border-radius:7px}
 .grid input{width:auto;margin:0 5px}
-@media(max-width:600px){button{max-width:100%}.card{padding:12px}}
+@media(max-width:600px){.card{padding:12px}button{max-width:100%}}
 </style>
 </head>
 
 <body>
 <header>
 <h1>برنامج إدارة حسابات الصيدلية</h1>
-<p>إدارة الحسابات والسندات والقوائم والموظفين</p>
+<p>الحسابات والسندات والقوائم والملاحظات</p>
 </header>
 
 <main>
@@ -55,9 +53,11 @@ label{font-weight:bold}
 <section id="loginCard" class="card">
 <h2>تسجيل الدخول</h2>
 <label>البريد الإلكتروني</label>
-<input id="email" type="email" autocomplete="username" placeholder="البريد الإلكتروني">
+<input id="email" type="email" autocomplete="username"
+placeholder="البريد الإلكتروني">
 <label>كلمة المرور</label>
-<input id="password" type="password" autocomplete="current-password" placeholder="كلمة المرور">
+<input id="password" type="password" autocomplete="current-password"
+placeholder="كلمة المرور">
 <button id="loginBtn">دخول</button>
 <p id="loginMessage" class="message"></p>
 </section>
@@ -72,8 +72,8 @@ label{font-weight:bold}
 
 <section class="card">
 <h2>لوحة التحكم</h2>
-<p>المستخدم: <span id="currentEmail"></span></p>
-<p>نوع الحساب: <span id="role"></span></p>
+<p>البريد: <span id="currentEmail"></span></p>
+<p>نوع الحساب: <span id="userRole"></span></p>
 <button id="logoutBtn">تسجيل الخروج</button>
 </section>
 
@@ -83,7 +83,9 @@ label{font-weight:bold}
 <p id="usersMessage" class="message"></p>
 <div class="table-wrap">
 <table>
-<thead><tr><th>البريد</th><th>الاسم</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+<thead>
+<tr><th>البريد</th><th>الحالة</th><th>الإجراءات</th></tr>
+</thead>
 <tbody id="usersTable"></tbody>
 </table>
 </div>
@@ -91,7 +93,7 @@ label{font-weight:bold}
 
 <section class="card">
 <h2>تصدير البيانات إلى Excel</h2>
-<p class="small">يتم تنزيل ملف CSV متوافق مع Excel ويدعم اللغة العربية.</p>
+<p class="small">ينزل ملف CSV متوافقاً مع Excel ويدعم العربية.</p>
 <label>من تاريخ</label><input id="exportFrom" type="date">
 <label>إلى تاريخ</label><input id="exportTo" type="date">
 <div class="grid">
@@ -113,7 +115,7 @@ label{font-weight:bold}
 
 <section id="accounts" class="card">
 <h2>الحسابات</h2>
-<div id="accountForm">
+<div id="accountsForm">
 <label>اسم الحساب</label><input id="aName">
 <label>نوع الحساب</label>
 <select id="aType">
@@ -124,13 +126,13 @@ label{font-weight:bold}
 <option value="expense">مصروفات</option>
 <option value="other">أخرى</option>
 </select>
-<label>رقم الهاتف</label><input id="aPhone">
+<label>الهاتف</label><input id="aPhone">
 <label>الرصيد الافتتاحي</label><input id="aBalance" type="number" value="0">
 <label>ملاحظات</label><textarea id="aNotes"></textarea>
 <button id="saveAccount">حفظ الحساب</button>
-<button id="cancelAccount" class="secondary hidden">إلغاء التعديل</button>
+<button id="cancelAccount" class="secondary hidden">إلغاء</button>
 </div>
-<input id="searchAccounts" placeholder="بحث عن حساب">
+<input id="searchAccounts" placeholder="بحث بالحسابات">
 <div class="table-wrap"><table>
 <thead><tr><th>الاسم</th><th>النوع</th><th>الهاتف</th><th>الرصيد</th><th>الإجراءات</th></tr></thead>
 <tbody id="accountsTable"></tbody>
@@ -139,20 +141,20 @@ label{font-weight:bold}
 
 <section id="vouchers" class="card hidden">
 <h2>السندات</h2>
-<div id="voucherForm">
+<div id="vouchersForm">
 <label>نوع السند</label>
 <select id="vType"><option value="receipt">استلام</option><option value="payment">دفع</option></select>
 <label>الحساب</label><select id="vAccount"></select>
 <label>التاريخ</label><input id="vDate" type="date">
-<label>المبلغ</label><input id="vAmount" type="number" min="0.01" step="0.01">
+<label>المبلغ</label><input id="vAmount" type="number" min="0.01">
 <label>طريقة الدفع</label>
 <select id="vMethod"><option>نقداً</option><option>تحويل مصرفي</option><option>صك</option><option>أخرى</option></select>
 <label>البيان</label><input id="vDescription">
 <label>ملاحظات</label><textarea id="vNotes"></textarea>
 <button id="saveVoucher">حفظ السند</button>
-<button id="cancelVoucher" class="secondary hidden">إلغاء التعديل</button>
+<button id="cancelVoucher" class="secondary hidden">إلغاء</button>
 </div>
-<input id="searchVouchers" placeholder="بحث في السندات">
+<input id="searchVouchers" placeholder="بحث بالسندات">
 <div class="table-wrap"><table>
 <thead><tr><th>النوع</th><th>الحساب</th><th>التاريخ</th><th>المبلغ</th><th>البيان</th><th>الإجراءات</th></tr></thead>
 <tbody id="vouchersTable"></tbody>
@@ -161,7 +163,7 @@ label{font-weight:bold}
 
 <section id="lists" class="card hidden">
 <h2>القوائم</h2>
-<div id="listForm">
+<div id="listsForm">
 <label>نوع القائمة</label>
 <select id="lType"><option value="incoming">واردة</option><option value="outgoing">صادرة</option><option value="return">استرجاع</option></select>
 <label>رقم القائمة</label><input id="lNumber">
@@ -171,9 +173,9 @@ label{font-weight:bold}
 <label>البيان</label><input id="lDescription">
 <label>ملاحظات</label><textarea id="lNotes"></textarea>
 <button id="saveList">حفظ القائمة</button>
-<button id="cancelList" class="secondary hidden">إلغاء التعديل</button>
+<button id="cancelList" class="secondary hidden">إلغاء</button>
 </div>
-<input id="searchLists" placeholder="بحث في القوائم">
+<input id="searchLists" placeholder="بحث بالقوائم">
 <div class="table-wrap"><table>
 <thead><tr><th>رقم</th><th>النوع</th><th>الحساب</th><th>التاريخ</th><th>المبلغ</th><th>الإجراءات</th></tr></thead>
 <tbody id="listsTable"></tbody>
@@ -182,13 +184,13 @@ label{font-weight:bold}
 
 <section id="notes" class="card hidden">
 <h2>الملاحظات</h2>
-<div id="noteForm">
+<div id="notesForm">
 <label>عنوان الملاحظة</label><input id="nTitle">
 <label>الملاحظة</label><textarea id="nBody"></textarea>
 <button id="saveNote">حفظ الملاحظة</button>
-<button id="cancelNote" class="secondary hidden">إلغاء التعديل</button>
+<button id="cancelNote" class="secondary hidden">إلغاء</button>
 </div>
-<input id="searchNotes" placeholder="بحث في الملاحظات">
+<input id="searchNotes" placeholder="بحث بالملاحظات">
 <ul id="notesTable"></ul>
 </section>
 
@@ -196,16 +198,19 @@ label{font-weight:bold}
 </main>
 
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
  getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 import {
  getFirestore,collection,addDoc,getDocs,doc,getDoc,setDoc,
  updateDoc,deleteDoc,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* إعدادات Firebase الخاصة بمشروعك */
+/* إعدادات Firebase */
 const firebaseConfig={
  apiKey:"AIzaSyAofpz2I1UrRacIzbrdotoVzS_XGOps7_c",
  authDomain:"accounting-management-6299b.firebaseapp.com",
@@ -217,35 +222,14 @@ const firebaseConfig={
 
 const ADMIN_EMAIL="mahdialalihaider2014@gmail.com".toLowerCase();
 
-let appFirebase,auth,db,currentUser=null,currentProfile=null;
+const $=id=>document.getElementById(id);
+
+let appFirebase,auth,db;
+let currentUser=null,currentProfile=null;
 let accounts=[],vouchers=[],lists=[],notes=[];
 let editing={accounts:null,vouchers:null,lists:null,notes:null};
 
-const $=id=>document.getElementById(id);
-
-function showMessage(id,text,success=false){
- $(id).textContent=text;
- $(id).className=success?"message success":"message";
-}
-
-function esc(v){
- return String(v??"").replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[c]));
-}
-
-function admin(){
- return currentUser&&(currentUser.email||"").toLowerCase()===ADMIN_EMAIL;
-}
-
-function permissions(){
- return currentProfile?.permissions||{};
-}
-
-function can(key){
- return admin()||permissions()[key]===true;
-}
-
+/* الصلاحيات الافتراضية للموظف */
 const defaultPermissions={
  accountsView:true,accountsAdd:true,accountsEdit:false,accountsDelete:false,
  vouchersView:true,vouchersAdd:true,vouchersEdit:false,vouchersDelete:false,
@@ -266,67 +250,70 @@ const permLabels={
  exportData:"تصدير البيانات"
 };
 
-function today(id){
- const d=new Date();
- $(id).value=new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
-}
-today("vDate");
-today("lDate");
-
-function setTab(tab){
- ["accounts","vouchers","lists","notes"].forEach(id=>{
-  $(id).classList.toggle("hidden",id!==tab||!can(id+"View"));
- });
+function msg(id,text,success=false){
+ $(id).textContent=text;
+ $(id).className=success?"message success":"message";
 }
 
-document.querySelectorAll("[data-tab]").forEach(btn=>{
- btn.onclick=()=>setTab(btn.dataset.tab);
-});
-
-function updateUI(){
- ["accounts","vouchers","lists","notes"].forEach(name=>{
-  const view=can(name+"View");
-  const nav=document.querySelector(`[data-tab="${name}"]`);
-  if(nav)nav.classList.toggle("hidden",!view);
-  $(name).classList.toggle("hidden",!view);
-  const form=name.slice(0,-1)+"Form";
-  if($(form))$(form).classList.toggle("hidden",!can(name+"Add")&&!editing[name]);
- });
-
- $("exportBtn").disabled=!can("exportData");
+function esc(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
 }
 
+function isAdmin(){
+ return !!currentUser&&(currentUser.email||"").toLowerCase()===ADMIN_EMAIL;
+}
+
+function can(key){
+ return isAdmin()||currentProfile?.permissions?.[key]===true;
+}
+
+/* مهم: تهيئة Firebase قبل مراقبة تسجيل الدخول */
+try{
+ appFirebase=initializeApp(firebaseConfig);
+ auth=getAuth(appFirebase);
+ db=getFirestore(appFirebase);
+}catch(error){
+ msg("loginMessage","خطأ في تهيئة Firebase:\n"+error.message);
+ $("loginBtn").disabled=true;
+}
+
+/* تسجيل الدخول */
 $("loginBtn").onclick=async()=>{
  const email=$("email").value.trim();
  const password=$("password").value;
 
  if(!email||!password){
-  showMessage("loginMessage","يرجى إدخال البريد وكلمة المرور.");
+  msg("loginMessage","أدخل البريد الإلكتروني وكلمة المرور.");
+  return;
+ }
+
+ if(!auth){
+  msg("loginMessage","Firebase لم يبدأ. أعد تحميل الصفحة.");
   return;
  }
 
  $("loginBtn").disabled=true;
- showMessage("loginMessage","جارٍ تسجيل الدخول...",true);
+ msg("loginMessage","جار تسجيل الدخول...",true);
 
  try{
-  if(!auth)throw new Error("Firebase لم يبدأ. أعد تحميل الصفحة.");
-
   await signInWithEmailAndPassword(auth,email,password);
-
- }catch(e){
+  msg("loginMessage","تم تسجيل الدخول.",true);
+ }catch(error){
   const errors={
    "auth/invalid-credential":"البريد الإلكتروني أو كلمة المرور غير صحيحة.",
    "auth/wrong-password":"كلمة المرور غير صحيحة.",
    "auth/user-not-found":"الحساب غير موجود.",
-   "auth/invalid-email":"صيغة البريد غير صحيحة.",
-   "auth/unauthorized-domain":"عنوان GitHub غير مسموح في Firebase.",
+   "auth/invalid-email":"البريد الإلكتروني غير صحيح.",
+   "auth/unauthorized-domain":"نطاق GitHub غير مسموح في Firebase.",
    "auth/too-many-requests":"محاولات كثيرة. انتظر قليلاً.",
-   "auth/network-request-failed":"تحقق من اتصال الإنترنت.",
+   "auth/network-request-failed":"تحقق من الإنترنت.",
    "auth/operation-not-allowed":"فعّل Email/Password في Firebase."
   };
 
-  showMessage("loginMessage",
-   errors[e.code]||`${e.code||"خطأ"}\n${e.message||e}`);
+  msg("loginMessage",
+   (errors[error.code]||error.message)+"\nرمز الخطأ: "+(error.code||"غير معروف"));
  }finally{
   $("loginBtn").disabled=false;
  }
@@ -339,19 +326,25 @@ async function logout(){
 $("logoutBtn").onclick=logout;
 $("pendingLogout").onclick=logout;
 
+/* ملف المستخدم */
 async function getProfile(user){
  const ref=doc(db,"users",user.uid);
  const snap=await getDoc(ref);
 
- if(admin()){
+ if(isAdmin()){
   const profile={
    email:user.email,
-   name:user.displayName||"المدير",
+   name:user.displayName||"مدير النظام",
    role:"admin",
    approved:true,
    permissions:{}
   };
-  await setDoc(ref,{...profile,updatedAt:serverTimestamp()},{merge:true});
+
+  await setDoc(ref,{
+   ...profile,
+   updatedAt:serverTimestamp()
+  },{merge:true});
+
   return profile;
  }
 
@@ -363,89 +356,100 @@ async function getProfile(user){
    approved:false,
    permissions:{...defaultPermissions}
   };
-  await setDoc(ref,{...profile,createdAt:serverTimestamp()});
+
+  await setDoc(ref,{
+   ...profile,
+   createdAt:serverTimestamp()
+  });
+
   return profile;
  }
+
  return snap.data();
 }
 
-onAuthStateChanged(auth,async user=>{
- currentUser=user;
- currentProfile=null;
+/* مراقبة حالة تسجيل الدخول */
+if(auth){
+ onAuthStateChanged(auth,async user=>{
+  currentUser=user;
+  currentProfile=null;
 
- $("loginCard").classList.toggle("hidden",!!user);
- $("app").classList.add("hidden");
- $("pendingCard").classList.add("hidden");
- $("adminCard").classList.add("hidden");
+  $("loginCard").classList.toggle("hidden",!!user);
+  $("app").classList.add("hidden");
+  $("pendingCard").classList.add("hidden");
+  $("adminCard").classList.add("hidden");
 
- if(!user)return;
+  if(!user)return;
 
- $("currentEmail").textContent=user.email||"";
+  $("currentEmail").textContent=user.email||"";
 
- try{
-  currentProfile=await getProfile(user);
+  try{
+   currentProfile=await getProfile(user);
 
-  if(!admin()&&currentProfile.approved!==true){
-   $("pendingCard").classList.remove("hidden");
-   return;
+   if(!isAdmin()&&currentProfile.approved!==true){
+    $("pendingCard").classList.remove("hidden");
+    return;
+   }
+
+   $("app").classList.remove("hidden");
+   $("userRole").textContent=isAdmin()?"مدير النظام":"موظف";
+
+   if(isAdmin()){
+    $("adminCard").classList.remove("hidden");
+    await loadUsers();
+   }
+
+   updateUI();
+   await loadAll();
+
+  }catch(error){
+   msg("loginMessage",
+    "تم تسجيل الدخول لكن تعذر تحميل البيانات:\n"+
+    error.message+"\nرمز الخطأ: "+(error.code||""));
   }
+ });
+}
 
-  $("app").classList.remove("hidden");
-  $("role").textContent=admin()?"مدير النظام":"موظف";
-
-  if(admin()){
-   $("adminCard").classList.remove("hidden");
-   await loadUsers();
-  }
-
-  updateUI();
-  await loadAll();
-
- }catch(e){
-  showMessage("loginMessage",
-   "تم تسجيل الدخول لكن حدث خطأ في Firestore:\n"+
-   (e.code||"")+" "+e.message);
- }
-});
-
+/* المدير والموظفون */
 async function loadUsers(){
- if(!admin())return;
+ if(!isAdmin())return;
 
  $("usersTable").innerHTML="";
- showMessage("usersMessage","جار تحميل الموظفين...",true);
+ msg("usersMessage","جار تحميل الموظفين...",true);
 
  try{
   const snap=await getDocs(collection(db,"users"));
 
   snap.forEach(s=>{
    const u=s.data();
+
    if((u.email||"").toLowerCase()===ADMIN_EMAIL)return;
 
    const tr=document.createElement("tr");
    tr.innerHTML=`
    <td>${esc(u.email)}</td>
-   <td>${esc(u.name||"")}</td>
-   <td>${u.approved?"معتمد":"بانتظار الموافقة"}</td>
+   <td>${u.approved===true?"معتمد":"بانتظار الموافقة"}</td>
    <td>
-   <button data-approve="${s.id}">${u.approved?"إيقاف":"اعتماد"}</button>
+   <button data-approve="${s.id}">
+   ${u.approved===true?"إيقاف":"اعتماد"}
+   </button>
    <button data-permissions="${s.id}" class="secondary">الصلاحيات</button>
    </td>`;
+
    $("usersTable").appendChild(tr);
   });
 
-  showMessage("usersMessage","تم تحميل الموظفين.",true);
+  msg("usersMessage","تم تحميل الموظفين.",true);
  }catch(e){
-  showMessage("usersMessage","خطأ تحميل الموظفين: "+e.message);
+  msg("usersMessage","تعذر تحميل الموظفين: "+e.message);
  }
 }
 
 $("refreshUsers").onclick=loadUsers;
 
 $("usersTable").onclick=async event=>{
- const approve=event.target.dataset.approve;
- const edit=event.target.dataset.permissions;
- const uid=approve||edit;
- if(!uid||!admin())return;
+ const uid=event.target.dataset.approve||event.target.dataset.permissions;
+ if(!uid||!isAdmin())return;
 
  try{
   const ref=doc(db,"users",uid);
@@ -454,9 +458,9 @@ $("usersTable").onclick=async event=>{
 
   const data=snap.data();
 
-  if(approve){
+  if(event.target.dataset.approve){
    await updateDoc(ref,{
-    approved:!data.approved,
+    approved:data.approved!==true,
     updatedAt:serverTimestamp()
    });
    await loadUsers();
@@ -464,17 +468,16 @@ $("usersTable").onclick=async event=>{
   }
 
   const perms={...defaultPermissions,...(data.permissions||{})};
-
   const modal=document.createElement("div");
-  modal.style="position:fixed;inset:0;background:#0008;z-index:9999;overflow:auto;padding:15px";
 
+  modal.style="position:fixed;inset:0;background:#0008;z-index:9999;overflow:auto;padding:15px";
   modal.innerHTML=`
-  <div style="background:white;padding:20px;border-radius:12px;max-width:650px;margin:30px auto">
-  <h3>صلاحيات ${esc(data.email)}</h3>
-  <div id="permGrid" class="grid"></div>
-  <button id="savePerm">حفظ</button>
-  <button id="closePerm" class="secondary">إغلاق</button>
-  </div>`;
+   <div style="background:white;padding:20px;border-radius:12px;max-width:650px;margin:30px auto">
+   <h3>صلاحيات الموظف</h3>
+   <div id="permGrid" class="grid"></div>
+   <button id="savePerm">حفظ الصلاحيات</button>
+   <button id="closePerm" class="secondary">إغلاق</button>
+   </div>`;
 
   document.body.appendChild(modal);
 
@@ -482,7 +485,7 @@ $("usersTable").onclick=async event=>{
 
   Object.entries(permLabels).forEach(([key,label])=>{
    const l=document.createElement("label");
-   l.innerHTML=`<input type="checkbox" data-key="${key}" ${perms[key]?"checked":""}>${label}`;
+   l.innerHTML=`<input type="checkbox" data-key="${key}" ${perms[key]===true?"checked":""}>${label}`;
    grid.appendChild(l);
   });
 
@@ -491,21 +494,46 @@ $("usersTable").onclick=async event=>{
   modal.querySelector("#savePerm").onclick=async()=>{
    const p={};
    grid.querySelectorAll("input").forEach(i=>p[i.dataset.key]=i.checked);
+
    try{
     await updateDoc(ref,{permissions:p,updatedAt:serverTimestamp()});
     modal.remove();
-    alert("تم حفظ الصلاحيات");
     await loadUsers();
+    alert("تم حفظ الصلاحيات.");
    }catch(e){alert(e.message)}
   };
 
  }catch(e){alert(e.message)}
 };
 
-const collections=["accounts","vouchers","lists","notes"];
+/* التنقل */
+function showTab(name){
+ ["accounts","vouchers","lists","notes"].forEach(n=>{
+  $(n).classList.toggle("hidden",n!==name||!can(n+"View"));
+ });
+}
 
+document.querySelectorAll("[data-tab]").forEach(btn=>{
+ btn.onclick=()=>showTab(btn.dataset.tab);
+});
+
+function updateUI(){
+ ["accounts","vouchers","lists","notes"].forEach(name=>{
+  const nav=document.querySelector(`[data-tab="${name}"]`);
+  nav.classList.toggle("hidden",!can(name+"View"));
+  $(name).classList.toggle("hidden",!can(name+"View"));
+
+  const form=$(name+"Form");
+  if(form)form.classList.toggle("hidden",!can(name+"Add")&&!editing[name]);
+ });
+
+ $("exportBtn").disabled=!can("exportData");
+}
+
+/* تحميل البيانات */
 async function loadCollection(name){
  if(!can(name+"View"))return [];
+
  const snap=await getDocs(collection(db,name));
  return snap.docs.map(d=>({id:d.id,...d.data()}));
 }
@@ -520,10 +548,10 @@ async function loadAll(){
  renderVouchers();
  renderLists();
  renderNotes();
- refreshAccountsOptions();
+ refreshAccountOptions();
 }
 
-function refreshAccountsOptions(){
+function refreshAccountOptions(){
  const opts=accounts.map(a=>
  `<option value="${esc(a.id)}">${esc(a.name)}</option>`
  ).join("");
@@ -600,8 +628,7 @@ function renderNotes(){
  [n.title,n.body].join(" ").toLowerCase().includes(q)
  ).forEach(n=>{
   const li=document.createElement("li");
-  li.innerHTML=`<b>${esc(n.title)}</b> — ${esc(n.body)}
-  ${actions("notes",n.id)}`;
+  li.innerHTML=`<b>${esc(n.title)}</b> — ${esc(n.body)} ${actions("notes",n.id)}`;
   $("notesTable").appendChild(li);
  });
 }
@@ -613,75 +640,52 @@ function renderNotes(){
  ["searchNotes",renderNotes]
 ].forEach(([id,fn])=>$(id).addEventListener("input",fn));
 
-const formFields={
- accounts:{
-  aName:"name",aType:"type",aPhone:"phone",aBalance:"balance",aNotes:"notes"
- },
- vouchers:{
-  vType:"type",vAccount:"accountId",vDate:"date",vAmount:"amount",
-  vMethod:"method",vDescription:"description",vNotes:"notes"
- },
- lists:{
-  lType:"type",lNumber:"number",lAccount:"accountId",lDate:"date",
-  lAmount:"amount",lDescription:"description",lNotes:"notes"
- },
+/* نماذج الإدخال */
+const fields={
+ accounts:{aName:"name",aType:"type",aPhone:"phone",aBalance:"balance",aNotes:"notes"},
+ vouchers:{vType:"type",vAccount:"accountId",vDate:"date",vAmount:"amount",vMethod:"method",vDescription:"description",vNotes:"notes"},
+ lists:{lType:"type",lNumber:"number",lAccount:"accountId",lDate:"date",lAmount:"amount",lDescription:"description",lNotes:"notes"},
  notes:{nTitle:"title",nBody:"body"}
 };
 
-const formNames={
- accounts:"account",vouchers:"voucher",lists:"list",notes:"note"
+const saveIds={
+ accounts:"saveAccount",vouchers:"saveVoucher",lists:"saveList",notes:"saveNote"
 };
 
-const saveButtons={
- accounts:"saveAccount",vouchers:"saveVoucher",
- lists:"saveList",notes:"saveNote"
-};
-
-const cancelButtons={
- accounts:"cancelAccount",vouchers:"cancelVoucher",
- lists:"cancelList",notes:"cancelNote"
+const cancelIds={
+ accounts:"cancelAccount",vouchers:"cancelVoucher",lists:"cancelList",notes:"cancelNote"
 };
 
 function resetForm(name){
  editing[name]=null;
 
- Object.keys(formFields[name]).forEach(id=>$(id).value="");
+ Object.keys(fields[name]).forEach(id=>$(id).value="");
 
  if(name==="accounts")$("aBalance").value="0";
 
- if(name==="vouchers")today("vDate");
- if(name==="lists")today("lDate");
-
- $(cancelButtons[name]).classList.add("hidden");
- $(saveButtons[name]).textContent={
- accounts:"حفظ الحساب",vouchers:"حفظ السند",
- lists:"حفظ القائمة",notes:"حفظ الملاحظة"
- }[name];
+ $(cancelIds[name]).classList.add("hidden");
+ $(saveIds[name]).textContent="حفظ";
 
  updateUI();
 }
 
-Object.entries(cancelButtons).forEach(([name,id])=>{
+Object.entries(cancelIds).forEach(([name,id])=>{
  $(id).onclick=()=>resetForm(name);
 });
 
 async function saveRecord(name,data){
  const id=editing[name];
- const permission=id?name+"Edit":name+"Add";
-
- if(!can(permission)){
+ if(!can(name+(id?"Edit":"Add"))){
   alert("ليس لديك صلاحية تنفيذ هذه العملية.");
   return;
  }
 
- const button=$(saveButtons[name]);
- button.disabled=true;
+ const btn=$(saveIds[name]);
+ btn.disabled=true;
 
  try{
   if(id){
-   await updateDoc(doc(db,name,id),{
-    ...data,updatedAt:serverTimestamp()
-   });
+   await updateDoc(doc(db,name,id),{...data,updatedAt:serverTimestamp()});
   }else{
    await addDoc(collection(db,name),{
     ...data,createdBy:currentUser.uid,createdAt:serverTimestamp()
@@ -691,11 +695,10 @@ async function saveRecord(name,data){
   resetForm(name);
   await loadAll();
   alert("تم الحفظ بنجاح.");
-
  }catch(e){
   alert("تعذر الحفظ:\n"+e.message);
  }finally{
-  button.disabled=false;
+  btn.disabled=false;
  }
 }
 
@@ -707,8 +710,7 @@ $("saveAccount").onclick=()=>{
  if(!Number.isFinite(balance))return alert("الرصيد غير صحيح.");
 
  saveRecord("accounts",{
-  name,type:$("aType").value,
-  phone:$("aPhone").value.trim(),
+  name,type:$("aType").value,phone:$("aPhone").value.trim(),
   balance,notes:$("aNotes").value.trim()
  });
 };
@@ -722,12 +724,9 @@ $("saveVoucher").onclick=()=>{
  if(!Number.isFinite(amount)||amount<=0)return alert("أدخل مبلغاً صحيحاً.");
 
  saveRecord("vouchers",{
-  type:$("vType").value,
-  accountId,accountName:account?.name||"",
-  date:$("vDate").value,amount,
-  method:$("vMethod").value,
-  description:$("vDescription").value.trim(),
-  notes:$("vNotes").value.trim()
+  type:$("vType").value,accountId,accountName:account?.name||"",
+  date:$("vDate").value,amount,method:$("vMethod").value,
+  description:$("vDescription").value.trim(),notes:$("vNotes").value.trim()
  });
 };
 
@@ -742,9 +741,8 @@ $("saveList").onclick=()=>{
 
  saveRecord("lists",{
   type:$("lType").value,number,accountId,
-  accountName:account?.name||"",
-  date:$("lDate").value,amount,
-  description:$("lDescription").value.trim(),
+  accountName:account?.name||"",date:$("lDate").value,
+  amount,description:$("lDescription").value.trim(),
   notes:$("lNotes").value.trim()
  });
 };
@@ -753,13 +751,13 @@ $("saveNote").onclick=()=>{
  const title=$("nTitle").value.trim();
  const body=$("nBody").value.trim();
 
- if(!title&&!body)return alert("أدخل عنواناً أو ملاحظة.");
-
+ if(!title&&!body)return alert("أدخل عنوان الملاحظة أو نصها.");
  saveRecord("notes",{title,body});
 };
 
-document.body.addEventListener("click",async e=>{
- const btn=e.target.closest("[data-edit],[data-delete]");
+/* تعديل وحذف السجلات */
+document.body.addEventListener("click",async event=>{
+ const btn=event.target.closest("[data-edit],[data-delete]");
  if(!btn)return;
 
  const name=btn.dataset.col;
@@ -767,35 +765,36 @@ document.body.addEventListener("click",async e=>{
 
  if(btn.dataset.delete){
   if(!can(name+"Delete"))return alert("لا توجد صلاحية للحذف.");
-  if(!confirm("هل تريد حذف هذا السجل؟"))return;
+  if(!confirm("هل تريد حذف السجل؟"))return;
 
   try{
    await deleteDoc(doc(db,name,id));
    await loadAll();
-  }catch(err){alert(err.message)}
+  }catch(e){alert(e.message)}
   return;
  }
 
  if(!can(name+"Edit"))return alert("لا توجد صلاحية للتعديل.");
 
- const data=({accounts,vouchers,lists,notes})[name].find(x=>x.id===id);
- if(!data)return;
+ const record=({accounts,vouchers,lists,notes})[name].find(x=>x.id===id);
+ if(!record)return;
 
  editing[name]=id;
 
- Object.entries(formFields[name]).forEach(([input,field])=>{
-  $(input).value=data[field]??"";
+ Object.entries(fields[name]).forEach(([input,key])=>{
+  $(input).value=record[key]??"";
  });
 
- $(cancelButtons[name]).classList.remove("hidden");
- $(saveButtons[name]).textContent="حفظ التعديلات";
+ $(cancelIds[name]).classList.remove("hidden");
+ $(saveIds[name]).textContent="حفظ التعديلات";
 
- setTab(name);
+ showTab(name);
  updateUI();
 });
 
-function csvCell(v){
- return '"'+String(v??"").replace(/"/g,'""')+'"';
+/* تصدير CSV المتوافق مع Excel */
+function csvCell(value){
+ return '"'+String(value??"").replace(/"/g,'""')+'"';
 }
 
 function downloadCSV(filename,rows){
@@ -863,18 +862,17 @@ $("exportBtn").onclick=()=>{
  if(!rows.length)return alert("حدد بيانات للتصدير.");
 
  downloadCSV("pharmacy-accounting.csv",rows);
- showMessage("exportMessage","تم تنزيل الملف. افتحه في Excel ثم احفظه بصيغة XLSX.",true);
+ msg("exportMessage","تم تنزيل CSV. افتحه في Excel ثم احفظه بصيغة XLSX.",true);
 };
 
-/* بدء Firebase وعرض أخطاء التهيئة */
-try{
- appFirebase=initializeApp(firebaseConfig);
- auth=getAuth(appFirebase);
- db=getFirestore(appFirebase);
-}catch(e){
- showMessage("loginMessage","خطأ في تشغيل Firebase:\n"+e.message);
- $("loginBtn").disabled=true;
-}
+/* أخطاء تحميل البيانات */
+window.addEventListener("error",event=>{
+ console.error("JavaScript error:",event.message);
+});
+
+window.addEventListener("unhandledrejection",event=>{
+ console.error("Unhandled error:",event.reason);
+});
 </script>
 </body>
 </html>
