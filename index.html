@@ -3,214 +3,353 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>برنامج إدارة حسابات الصيدلية</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إدارة حسابات الصيدلية</title>
 <style>
 :root{
---primary:#087f8c;
---dark:#155e75;
---bg:#f3f7f9;
---danger:#b42318;
---success:#087f46;
+ --primary:#087f8c;--dark:#155e75;--bg:#f2f6f8;
+ --text:#18313b;--muted:#64748b;--danger:#b42318;
+ --success:#087f46;--border:#e2e8f0;
 }
 *{box-sizing:border-box}
-body{font-family:Tahoma,Arial;background:var(--bg);margin:0;color:#18313b}
-header{background:var(--dark);color:white;text-align:center;padding:18px}
-main{max-width:1200px;margin:auto;padding:15px}
-.card{background:white;padding:18px;margin-bottom:15px;border-radius:12px;box-shadow:0 2px 8px #0001}
-input,select,textarea{width:100%;padding:11px;margin:6px 0 12px;border:1px solid #ccc;border-radius:8px;font:15px Tahoma}
-textarea{min-height:70px}
-button{background:var(--primary);color:white;border:0;padding:11px 15px;border-radius:8px;cursor:pointer;margin:4px;font-family:inherit}
+body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{border:0;border-radius:8px;padding:11px 15px;background:var(--primary);color:white;cursor:pointer}
 button:hover{background:var(--dark)}
-button:disabled{opacity:.5}
-.secondary{background:#64748b}
-.danger{background:var(--danger)}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{
+ width:100%;padding:11px;margin:6px 0 13px;
+ border:1px solid #cbd5e1;border-radius:8px;background:white
+}
+textarea{min-height:75px}
+label{font-weight:bold;font-size:14px}
+header{background:var(--dark);color:white;padding:16px 22px}
+header h1{margin:0;font-size:21px}
+header p{margin:6px 0 0;color:#dbeafe;font-size:13px}
 .hidden{display:none!important}
-nav{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.login-wrap{max-width:440px;margin:65px auto;padding:15px}
+.card{background:white;border-radius:13px;padding:18px;margin-bottom:16px;box-shadow:0 2px 9px #0000000b}
+.layout{display:flex;min-height:calc(100vh - 75px)}
+.sidebar{width:230px;background:#123e50;color:white;padding:16px;flex-shrink:0}
+.sidebar h3{font-size:16px;margin:5px 0 18px}
+.sidebar button{
+ display:block;width:100%;text-align:right;margin:5px 0;
+ background:transparent;color:#e2f3f7;padding:12px
+}
+.sidebar button.active,.sidebar button:hover{background:#ffffff20}
+.content{flex:1;min-width:0;padding:20px;max-width:1500px;margin:auto;width:100%}
+.page-title{margin:0 0 16px;font-size:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.stat{background:white;padding:18px;border-radius:12px;border:1px solid var(--border)}
+.stat small{color:var(--muted)}
+.stat strong{display:block;font-size:23px;margin-top:10px}
+.green{color:var(--success)}.red{color:var(--danger)}
+.secondary{background:#64748b}.danger{background:var(--danger)}
+.success-btn{background:var(--success)}
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:600px}
-th,td{border-bottom:1px solid #ddd;padding:9px;text-align:right}
-th{background:#f0f6f8}
-label{font-weight:bold}
-.message{white-space:pre-wrap;color:var(--danger);font-weight:bold}
-.success{color:var(--success)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
-.grid label{font-weight:normal;background:#f6fafb;padding:9px;border-radius:7px}
-.grid input{width:auto;margin:0 5px}
-@media(max-width:600px){.card{padding:12px}button{max-width:100%}}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:10px;text-align:right;border-bottom:1px solid var(--border);font-size:13px}
+th{background:#f1f6f8}
+.actions button{padding:7px 10px;font-size:12px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.message{white-space:pre-wrap;color:var(--danger);font-size:13px}
+.message.success{color:var(--success)}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.toolbar input{max-width:320px}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e0f2fe;color:#075985;font-size:12px}
+.note{background:#f0fdfa;padding:12px;border-radius:8px;color:#155e75;font-size:13px;line-height:1.8}
+footer{color:var(--muted);font-size:12px;padding:15px}
+@media(max-width:750px){
+ .layout{display:block}
+ .sidebar{width:100%;display:flex;overflow-x:auto;gap:5px;padding:8px}
+ .sidebar h3{display:none}
+ .sidebar button{white-space:nowrap;width:auto;margin:0;padding:10px}
+ .content{padding:10px}
+ header h1{font-size:18px}
+ .card{padding:13px}
+}
+@media print{
+ header,.sidebar,button,.no-print,.toolbar{display:none!important}
+ .layout{display:block}.content{padding:0}
+ .card{box-shadow:none;border:1px solid #ddd}
+ body{background:white}
+}
 </style>
 </head>
-
 <body>
+
 <header>
 <h1>برنامج إدارة حسابات الصيدلية</h1>
-<p>الحسابات والسندات والقوائم والملاحظات</p>
+<p>الإدارة المالية والحسابات والقاصّة والوارد اليومي</p>
 </header>
 
-<main>
-
-<section id="loginCard" class="card">
+<section id="loginCard" class="login-wrap card">
 <h2>تسجيل الدخول</h2>
 <label>البريد الإلكتروني</label>
-<input id="email" type="email" autocomplete="username"
-placeholder="البريد الإلكتروني">
+<input id="email" type="email" autocomplete="username">
 <label>كلمة المرور</label>
-<input id="password" type="password" autocomplete="current-password"
-placeholder="كلمة المرور">
+<input id="password" type="password" autocomplete="current-password">
 <button id="loginBtn">دخول</button>
 <p id="loginMessage" class="message"></p>
 </section>
 
-<section id="pendingCard" class="card hidden">
+<section id="pendingCard" class="login-wrap card hidden">
 <h2>الحساب بانتظار موافقة المدير</h2>
-<p>تم تسجيل الدخول، لكن المدير لم يعتمد حسابك بعد.</p>
+<p>تم تسجيل الدخول، لكن حسابك لم يعتمد بعد.</p>
 <button id="pendingLogout">تسجيل الخروج</button>
 </section>
 
-<div id="app" class="hidden">
+<div id="app" class="layout hidden">
+<aside class="sidebar">
+<h3>القائمة الرئيسية</h3>
+<button data-page="dashboard" class="active">لوحة التحكم</button>
+<button data-page="accounts">الحسابات</button>
+<button data-page="daily">الوارد اليومي</button>
+<button data-page="vouchers">سندات القبض والصرف</button>
+<button data-page="lists">القوائم</button>
+<button data-page="statement">كشف الحساب</button>
+<button data-page="notes">الملاحظات</button>
+<button data-page="employees" id="employeesNav" class="hidden">الموظفون والصلاحيات</button>
+<button data-page="export">تصدير البيانات</button>
+<button id="logoutBtn" class="danger">تسجيل الخروج</button>
+</aside>
+
+<main class="content">
 
 <section class="card">
-<h2>لوحة التحكم</h2>
-<p>البريد: <span id="currentEmail"></span></p>
-<p>نوع الحساب: <span id="userRole"></span></p>
-<button id="logoutBtn">تسجيل الخروج</button>
-</section>
-
-<section id="adminCard" class="card hidden">
-<h2>إدارة الموظفين والصلاحيات</h2>
-<button id="refreshUsers">تحديث الموظفين</button>
-<p id="usersMessage" class="message"></p>
-<div class="table-wrap">
-<table>
-<thead>
-<tr><th>البريد</th><th>الحالة</th><th>الإجراءات</th></tr>
-</thead>
-<tbody id="usersTable"></tbody>
-</table>
+<div class="row">
+<div>
+<strong id="currentEmail"></strong>
+<div><span class="badge" id="userRole"></span></div>
+</div>
+<div class="note">
+الأرصدة محسوبة من الرصيد الافتتاحي والحركات المسجلة.
+</div>
 </div>
 </section>
 
-<section class="card">
-<h2>تصدير البيانات إلى Excel</h2>
-<p class="small">ينزل ملف CSV متوافقاً مع Excel ويدعم العربية.</p>
-<label>من تاريخ</label><input id="exportFrom" type="date">
-<label>إلى تاريخ</label><input id="exportTo" type="date">
+<!-- لوحة التحكم -->
+<section id="page-dashboard" class="page">
+<h2 class="page-title">لوحة التحكم</h2>
 <div class="grid">
-<label><input type="checkbox" id="exAccounts" checked> الحسابات</label>
-<label><input type="checkbox" id="exVouchers" checked> السندات</label>
-<label><input type="checkbox" id="exLists" checked> القوائم</label>
-<label><input type="checkbox" id="exNotes" checked> الملاحظات</label>
+<div class="stat"><small>رصيد القاصّة</small><strong id="cashStat">0</strong></div>
+<div class="stat"><small>أرصدة المصارف</small><strong id="bankStat">0</strong></div>
+<div class="stat"><small>إجمالي أرصدة الحسابات</small><strong id="accountsStat">0</strong></div>
+<div class="stat"><small>إجمالي الوارد النقدي اليوم</small><strong id="todayCashStat">0</strong></div>
 </div>
-<button id="exportBtn">تصدير البيانات</button>
-<p id="exportMessage" class="message"></p>
+<div class="card" style="margin-top:16px">
+<h3>ملخص الحسابات</h3>
+<div class="table-wrap">
+<table><thead><tr><th>الحساب</th><th>النوع</th><th>الرصيد الافتتاحي</th><th>الرصيد الحالي</th></tr></thead>
+<tbody id="dashboardAccounts"></tbody></table>
+</div>
+</div>
 </section>
 
-<nav>
-<button data-tab="accounts">الحسابات</button>
-<button data-tab="vouchers">السندات</button>
-<button data-tab="lists">القوائم</button>
-<button data-tab="notes">الملاحظات</button>
-</nav>
-
-<section id="accounts" class="card">
-<h2>الحسابات</h2>
-<div id="accountsForm">
-<label>اسم الحساب</label><input id="aName">
-<label>نوع الحساب</label>
+<!-- الحسابات -->
+<section id="page-accounts" class="page hidden">
+<h2 class="page-title">الحسابات والصناديق والمصارف</h2>
+<div class="card">
+<h3>إضافة حساب</h3>
+<input id="aName" placeholder="اسم الحساب">
+<div class="row">
+<div><label>نوع الحساب</label>
 <select id="aType">
 <option value="supplier">مورد</option>
 <option value="customer">عميل</option>
-<option value="cash">صندوق نقدي</option>
+<option value="cash">صندوق نقدي / قاصّة</option>
 <option value="bank">مصرف</option>
 <option value="expense">مصروفات</option>
 <option value="other">أخرى</option>
-</select>
-<label>الهاتف</label><input id="aPhone">
-<label>الرصيد الافتتاحي</label><input id="aBalance" type="number" value="0">
+</select></div>
+<div><label>الهاتف</label><input id="aPhone"></div>
+</div>
+<label>الرصيد الافتتاحي</label>
+<input id="aBalance" type="number" value="0">
 <label>ملاحظات</label><textarea id="aNotes"></textarea>
 <button id="saveAccount">حفظ الحساب</button>
-<button id="cancelAccount" class="secondary hidden">إلغاء</button>
+<button id="cancelAccount" class="secondary hidden">إلغاء التعديل</button>
 </div>
-<input id="searchAccounts" placeholder="بحث بالحسابات">
-<div class="table-wrap"><table>
-<thead><tr><th>الاسم</th><th>النوع</th><th>الهاتف</th><th>الرصيد</th><th>الإجراءات</th></tr></thead>
-<tbody id="accountsTable"></tbody>
-</table></div>
+<div class="card">
+<input id="searchAccounts" placeholder="بحث عن حساب">
+<div class="table-wrap">
+<table><thead><tr><th>الاسم</th><th>النوع</th><th>الهاتف</th><th>الافتتاحي</th><th>الحالي</th><th>الإجراءات</th></tr></thead>
+<tbody id="accountsTable"></tbody></table>
+</div>
+</div>
 </section>
 
-<section id="vouchers" class="card hidden">
-<h2>السندات</h2>
-<div id="vouchersForm">
-<label>نوع السند</label>
-<select id="vType"><option value="receipt">استلام</option><option value="payment">دفع</option></select>
-<label>الحساب</label><select id="vAccount"></select>
-<label>التاريخ</label><input id="vDate" type="date">
-<label>المبلغ</label><input id="vAmount" type="number" min="0.01">
+<!-- الوارد اليومي -->
+<section id="page-daily" class="page hidden">
+<h2 class="page-title">الوارد اليومي</h2>
+<div class="note">
+يسجل هذا القسم مبيعات اليوم ومصروفاته. النقدي يضاف للقاصّة، والإلكتروني للمصرف المحدد، والآجل لحساب العملاء المحدد. المصروفات تخصم من القاصّة.
+</div>
+<div class="card">
+<h3>تسجيل الوارد اليومي</h3>
+<label>التاريخ</label><input id="dDate" type="date">
+<div class="row">
+<div><label>المبيعات النقدية</label><input id="dCash" type="number" min="0" value="0"></div>
+<div><label>المبيعات الإلكترونية</label><input id="dElectronic" type="number" min="0" value="0"></div>
+<div><label>المبيعات الآجلة</label><input id="dCredit" type="number" min="0" value="0"></div>
+<div><label>المصروفات اليومية</label><input id="dExpenses" type="number" min="0" value="0"></div>
+</div>
+<div class="row">
+<div><label>القاصّة المستلمة للنقدي</label><select id="dCashAccount"></select></div>
+<div><label>المصرف المستلم للإلكتروني</label><select id="dBankAccount"></select></div>
+<div><label>حساب العملاء للمبيعات الآجلة</label><select id="dCustomerAccount"></select></div>
+</div>
+<label>ملاحظات</label><textarea id="dNotes"></textarea>
+<button id="saveDaily">حفظ وترحيل الوارد اليومي</button>
+<button id="resetDaily" class="secondary">تفريغ الحقول</button>
+<p id="dailyMessage" class="message"></p>
+</div>
+<div class="card">
+<h3>سجل الوارد اليومي</h3>
+<input id="searchDaily" placeholder="بحث بالتاريخ">
+<div class="table-wrap">
+<table><thead><tr><th>التاريخ</th><th>نقدي</th><th>إلكتروني</th><th>آجل</th><th>مصروفات</th><th>الصافي النقدي</th><th>الإجراءات</th></tr></thead>
+<tbody id="dailyTable"></tbody></table>
+</div>
+</div>
+</section>
+
+<!-- السندات -->
+<section id="page-vouchers" class="page hidden">
+<h2 class="page-title">سندات القبض والصرف</h2>
+<div class="card">
+<h3>إضافة سند</h3>
+<div class="row">
+<div><label>نوع السند</label>
+<select id="vType"><option value="payment">سند دفع</option><option value="receipt">سند استلام</option></select></div>
+<div><label>الحساب المقابل</label><select id="vAccount"></select></div>
+</div>
+<div class="row">
+<div><label>حساب الحركة المالية</label><select id="vMovement"></select></div>
+<div><label>التاريخ</label><input id="vDate" type="date"></div>
+<div><label>المبلغ</label><input id="vAmount" type="number" min="0.01"></div>
+</div>
+<label>مصدر الاستلام / سبب الدفع</label>
+<select id="vSource">
+<option value="account">حساب مقابل</option>
+<option value="daily">الوارد اليومي</option>
+<option value="external">مصدر خارجي</option>
+</select>
 <label>طريقة الدفع</label>
 <select id="vMethod"><option>نقداً</option><option>تحويل مصرفي</option><option>صك</option><option>أخرى</option></select>
 <label>البيان</label><input id="vDescription">
 <label>ملاحظات</label><textarea id="vNotes"></textarea>
 <button id="saveVoucher">حفظ السند</button>
-<button id="cancelVoucher" class="secondary hidden">إلغاء</button>
+<p id="voucherMessage" class="message"></p>
 </div>
+<div class="card">
 <input id="searchVouchers" placeholder="بحث بالسندات">
 <div class="table-wrap"><table>
-<thead><tr><th>النوع</th><th>الحساب</th><th>التاريخ</th><th>المبلغ</th><th>البيان</th><th>الإجراءات</th></tr></thead>
-<tbody id="vouchersTable"></tbody>
-</table></div>
+<thead><tr><th>النوع</th><th>الحساب</th><th>حساب الحركة</th><th>التاريخ</th><th>المبلغ</th><th>البيان</th><th>الإجراءات</th></tr></thead>
+<tbody id="vouchersTable"></tbody></table></div>
+</div>
 </section>
 
-<section id="lists" class="card hidden">
-<h2>القوائم</h2>
-<div id="listsForm">
-<label>نوع القائمة</label>
-<select id="lType"><option value="incoming">واردة</option><option value="outgoing">صادرة</option><option value="return">استرجاع</option></select>
-<label>رقم القائمة</label><input id="lNumber">
-<label>الحساب</label><select id="lAccount"></select>
-<label>التاريخ</label><input id="lDate" type="date">
-<label>المبلغ</label><input id="lAmount" type="number" min="0">
+<!-- القوائم -->
+<section id="page-lists" class="page hidden">
+<h2 class="page-title">القوائم</h2>
+<div class="card">
+<h3>إضافة قائمة</h3>
+<div class="row">
+<div><label>نوع القائمة</label>
+<select id="lType"><option value="incoming">واردة</option><option value="outgoing">صادرة</option><option value="return">استرجاع</option></select></div>
+<div><label>رقم القائمة</label><input id="lNumber"></div>
+<div><label>الحساب</label><select id="lAccount"></select></div>
+<div><label>التاريخ</label><input id="lDate" type="date"></div>
+<div><label>المبلغ</label><input id="lAmount" type="number" min="0"></div>
+</div>
 <label>البيان</label><input id="lDescription">
 <label>ملاحظات</label><textarea id="lNotes"></textarea>
 <button id="saveList">حفظ القائمة</button>
-<button id="cancelList" class="secondary hidden">إلغاء</button>
+<p id="listMessage" class="message"></p>
 </div>
+<div class="card">
 <input id="searchLists" placeholder="بحث بالقوائم">
 <div class="table-wrap"><table>
-<thead><tr><th>رقم</th><th>النوع</th><th>الحساب</th><th>التاريخ</th><th>المبلغ</th><th>الإجراءات</th></tr></thead>
-<tbody id="listsTable"></tbody>
-</table></div>
+<thead><tr><th>الرقم</th><th>النوع</th><th>الحساب</th><th>التاريخ</th><th>المبلغ</th><th>الإجراءات</th></tr></thead>
+<tbody id="listsTable"></tbody></table></div>
+</div>
 </section>
 
-<section id="notes" class="card hidden">
-<h2>الملاحظات</h2>
-<div id="notesForm">
-<label>عنوان الملاحظة</label><input id="nTitle">
+<!-- كشف الحساب -->
+<section id="page-statement" class="page hidden">
+<h2 class="page-title">كشف الحساب</h2>
+<div class="card">
+<label>اختر الحساب</label><select id="statementAccount"></select>
+<div class="row">
+<div><label>من تاريخ</label><input id="statementFrom" type="date"></div>
+<div><label>إلى تاريخ</label><input id="statementTo" type="date"></div>
+</div>
+<button id="showStatement">عرض الكشف</button>
+<button id="printStatement" class="secondary">طباعة الكشف</button>
+<div id="statementResult"></div>
+</div>
+</section>
+
+<!-- الملاحظات -->
+<section id="page-notes" class="page hidden">
+<h2 class="page-title">الملاحظات</h2>
+<div class="card">
+<label>العنوان</label><input id="nTitle">
 <label>الملاحظة</label><textarea id="nBody"></textarea>
 <button id="saveNote">حفظ الملاحظة</button>
-<button id="cancelNote" class="secondary hidden">إلغاء</button>
 </div>
-<input id="searchNotes" placeholder="بحث بالملاحظات">
+<div class="card">
+<input id="searchNotes" placeholder="بحث">
 <ul id="notesTable"></ul>
+</div>
 </section>
 
+<!-- الموظفون -->
+<section id="page-employees" class="page hidden">
+<h2 class="page-title">الموظفون والموافقة</h2>
+<div class="card">
+<button id="refreshUsers">تحديث الموظفين</button>
+<p id="usersMessage" class="message"></p>
+<div class="table-wrap"><table>
+<thead><tr><th>البريد الإلكتروني</th><th>الحالة</th><th>الإجراء</th></tr></thead>
+<tbody id="usersTable"></tbody></table></div>
 </div>
+</section>
+
+<!-- التصدير -->
+<section id="page-export" class="page hidden">
+<h2 class="page-title">تصدير البيانات</h2>
+<div class="card">
+<div class="row">
+<div><label>من تاريخ</label><input id="exportFrom" type="date"></div>
+<div><label>إلى تاريخ</label><input id="exportTo" type="date"></div>
+</div>
+<label><input type="checkbox" id="exAccounts" checked style="width:auto"> الحسابات</label><br>
+<label><input type="checkbox" id="exVouchers" checked style="width:auto"> السندات</label><br>
+<label><input type="checkbox" id="exLists" checked style="width:auto"> القوائم</label><br>
+<label><input type="checkbox" id="exDaily" checked style="width:auto"> الوارد اليومي</label><br>
+<label><input type="checkbox" id="exNotes" checked style="width:auto"> الملاحظات</label><br><br>
+<button id="exportBtn">تصدير CSV إلى Excel</button>
+<p id="exportMessage" class="message"></p>
+</div>
+</section>
+
+<footer>برنامج إدارة حسابات الصيدلية</footer>
 </main>
+</div>
 
 <script type="module">
 import {initializeApp}
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
  getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 import {
  getFirestore,collection,addDoc,getDocs,doc,getDoc,setDoc,
  updateDoc,deleteDoc,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* إعدادات Firebase */
 const firebaseConfig={
  apiKey:"AIzaSyAofpz2I1UrRacIzbrdotoVzS_XGOps7_c",
  authDomain:"accounting-management-6299b.firebaseapp.com",
@@ -219,660 +358,554 @@ const firebaseConfig={
  messagingSenderId:"649827957105",
  appId:"1:649827957105:web:3980801b3c8390c55c9ed0"
 };
-
 const ADMIN_EMAIL="mahdialalihaider2014@gmail.com".toLowerCase();
-
 const $=id=>document.getElementById(id);
+const appFirebase=initializeApp(firebaseConfig);
+const auth=getAuth(appFirebase);
+const db=getFirestore(appFirebase);
 
-let appFirebase,auth,db;
 let currentUser=null,currentProfile=null;
-let accounts=[],vouchers=[],lists=[],notes=[];
-let editing={accounts:null,vouchers:null,lists:null,notes:null};
+let accounts=[],vouchers=[],lists=[],dailyIncome=[],notes=[];
+let editingAccount=null;
 
-/* الصلاحيات الافتراضية للموظف */
 const defaultPermissions={
- accountsView:true,accountsAdd:true,accountsEdit:false,accountsDelete:false,
- vouchersView:true,vouchersAdd:true,vouchersEdit:false,vouchersDelete:false,
- listsView:true,listsAdd:true,listsEdit:false,listsDelete:false,
- notesView:true,notesAdd:true,notesEdit:false,notesDelete:false,
+ accountsView:true,accountsAdd:true,
+ vouchersView:true,vouchersAdd:true,
+ listsView:true,listsAdd:true,
+ dailyView:true,dailyAdd:true,
+ notesView:true,notesAdd:true,
  exportData:false
 };
-
-const permLabels={
- accountsView:"عرض الحسابات",accountsAdd:"إضافة الحسابات",
- accountsEdit:"تعديل الحسابات",accountsDelete:"حذف الحسابات",
- vouchersView:"عرض السندات",vouchersAdd:"إضافة السندات",
- vouchersEdit:"تعديل السندات",vouchersDelete:"حذف السندات",
- listsView:"عرض القوائم",listsAdd:"إضافة القوائم",
- listsEdit:"تعديل القوائم",listsDelete:"حذف القوائم",
- notesView:"عرض الملاحظات",notesAdd:"إضافة الملاحظات",
- notesEdit:"تعديل الملاحظات",notesDelete:"حذف الملاحظات",
- exportData:"تصدير البيانات"
-};
-
-function msg(id,text,success=false){
- $(id).textContent=text;
- $(id).className=success?"message success":"message";
+function isAdmin(){
+ return !!currentUser&&(currentUser.email||"").toLowerCase()===ADMIN_EMAIL;
 }
-
+function can(key){
+ return isAdmin()||currentProfile?.permissions?.[key]===true;
+}
+function msg(id,text,ok=false){
+ $(id).textContent=text;
+ $(id).className=ok?"message success":"message";
+}
 function esc(v){
  return String(v??"").replace(/[&<>"']/g,c=>({
  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
  }[c]));
 }
-
-function isAdmin(){
- return !!currentUser&&(currentUser.email||"").toLowerCase()===ADMIN_EMAIL;
+function money(v){
+ return Number(v||0).toLocaleString("en-US")+" د.ع";
 }
-
-function can(key){
- return isAdmin()||currentProfile?.permissions?.[key]===true;
+function today(){
+ const d=new Date();
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
+$("dDate").value=today();
+$("vDate").value=today();
+$("lDate").value=today();
 
-/* مهم: تهيئة Firebase قبل مراقبة تسجيل الدخول */
-try{
- appFirebase=initializeApp(firebaseConfig);
- auth=getAuth(appFirebase);
- db=getFirestore(appFirebase);
-}catch(error){
- msg("loginMessage","خطأ في تهيئة Firebase:\n"+error.message);
- $("loginBtn").disabled=true;
-}
-
-/* تسجيل الدخول */
 $("loginBtn").onclick=async()=>{
- const email=$("email").value.trim();
- const password=$("password").value;
-
- if(!email||!password){
-  msg("loginMessage","أدخل البريد الإلكتروني وكلمة المرور.");
-  return;
- }
-
- if(!auth){
-  msg("loginMessage","Firebase لم يبدأ. أعد تحميل الصفحة.");
-  return;
- }
-
+ const email=$("email").value.trim(),password=$("password").value;
+ if(!email||!password)return msg("loginMessage","أدخل البريد وكلمة المرور.");
  $("loginBtn").disabled=true;
  msg("loginMessage","جار تسجيل الدخول...",true);
-
  try{
   await signInWithEmailAndPassword(auth,email,password);
-  msg("loginMessage","تم تسجيل الدخول.",true);
- }catch(error){
-  const errors={
+ }catch(e){
+  const map={
    "auth/invalid-credential":"البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-   "auth/wrong-password":"كلمة المرور غير صحيحة.",
-   "auth/user-not-found":"الحساب غير موجود.",
-   "auth/invalid-email":"البريد الإلكتروني غير صحيح.",
    "auth/unauthorized-domain":"نطاق GitHub غير مسموح في Firebase.",
    "auth/too-many-requests":"محاولات كثيرة. انتظر قليلاً.",
-   "auth/network-request-failed":"تحقق من الإنترنت.",
-   "auth/operation-not-allowed":"فعّل Email/Password في Firebase."
+   "auth/network-request-failed":"تحقق من الاتصال بالإنترنت.",
+   "auth/operation-not-allowed":"فعّل تسجيل الدخول بالبريد وكلمة المرور."
   };
-
-  msg("loginMessage",
-   (errors[error.code]||error.message)+"\nرمز الخطأ: "+(error.code||"غير معروف"));
- }finally{
-  $("loginBtn").disabled=false;
- }
+  msg("loginMessage",(map[e.code]||e.message)+"\n"+e.code);
+ }finally{$("loginBtn").disabled=false}
 };
-
-async function logout(){
- try{await signOut(auth)}
- catch(e){alert(e.message)}
-}
+async function logout(){await signOut(auth)}
 $("logoutBtn").onclick=logout;
 $("pendingLogout").onclick=logout;
 
-/* ملف المستخدم */
 async function getProfile(user){
- const ref=doc(db,"users",user.uid);
- const snap=await getDoc(ref);
-
+ const ref=doc(db,"users",user.uid),snap=await getDoc(ref);
  if(isAdmin()){
-  const profile={
-   email:user.email,
-   name:user.displayName||"مدير النظام",
-   role:"admin",
-   approved:true,
-   permissions:{}
-  };
-
-  await setDoc(ref,{
-   ...profile,
-   updatedAt:serverTimestamp()
-  },{merge:true});
-
-  return profile;
+  const p={email:user.email,name:"مدير النظام",role:"admin",approved:true,permissions:{}};
+  await setDoc(ref,{...p,updatedAt:serverTimestamp()},{merge:true});
+  return p;
  }
-
  if(!snap.exists()){
-  const profile={
-   email:user.email,
-   name:user.displayName||"",
-   role:"employee",
-   approved:false,
-   permissions:{...defaultPermissions}
-  };
-
-  await setDoc(ref,{
-   ...profile,
-   createdAt:serverTimestamp()
-  });
-
-  return profile;
+  const p={email:user.email,name:"",role:"employee",approved:false,permissions:{...defaultPermissions}};
+  await setDoc(ref,{...p,createdAt:serverTimestamp()});
+  return p;
  }
-
  return snap.data();
 }
-
-/* مراقبة حالة تسجيل الدخول */
-if(auth){
- onAuthStateChanged(auth,async user=>{
-  currentUser=user;
-  currentProfile=null;
-
-  $("loginCard").classList.toggle("hidden",!!user);
-  $("app").classList.add("hidden");
-  $("pendingCard").classList.add("hidden");
-  $("adminCard").classList.add("hidden");
-
-  if(!user)return;
-
+onAuthStateChanged(auth,async user=>{
+ currentUser=user;currentProfile=null;
+ $("loginCard").classList.toggle("hidden",!!user);
+ $("app").classList.add("hidden");
+ $("pendingCard").classList.add("hidden");
+ if(!user)return;
+ try{
+  currentProfile=await getProfile(user);
+  if(!isAdmin()&&currentProfile.approved!==true){
+   $("pendingCard").classList.remove("hidden");return;
+  }
+  $("app").classList.remove("hidden");
   $("currentEmail").textContent=user.email||"";
-
-  try{
-   currentProfile=await getProfile(user);
-
-   if(!isAdmin()&&currentProfile.approved!==true){
-    $("pendingCard").classList.remove("hidden");
-    return;
-   }
-
-   $("app").classList.remove("hidden");
-   $("userRole").textContent=isAdmin()?"مدير النظام":"موظف";
-
-   if(isAdmin()){
-    $("adminCard").classList.remove("hidden");
-    await loadUsers();
-   }
-
-   updateUI();
-   await loadAll();
-
-  }catch(error){
-   msg("loginMessage",
-    "تم تسجيل الدخول لكن تعذر تحميل البيانات:\n"+
-    error.message+"\nرمز الخطأ: "+(error.code||""));
-  }
- });
-}
-
-/* المدير والموظفون */
-async function loadUsers(){
- if(!isAdmin())return;
-
- $("usersTable").innerHTML="";
- msg("usersMessage","جار تحميل الموظفين...",true);
-
- try{
-  const snap=await getDocs(collection(db,"users"));
-
-  snap.forEach(s=>{
-   const u=s.data();
-
-   if((u.email||"").toLowerCase()===ADMIN_EMAIL)return;
-
-   const tr=document.createElement("tr");
-   tr.innerHTML=`
-   <td>${esc(u.email)}</td>
-   <td>${u.approved===true?"معتمد":"بانتظار الموافقة"}</td>
-   <td>
-   <button data-approve="${s.id}">
-   ${u.approved===true?"إيقاف":"اعتماد"}
-   </button>
-   <button data-permissions="${s.id}" class="secondary">الصلاحيات</button>
-   </td>`;
-
-   $("usersTable").appendChild(tr);
-  });
-
-  msg("usersMessage","تم تحميل الموظفين.",true);
+  $("userRole").textContent=isAdmin()?"مدير النظام":"موظف";
+  $("employeesNav").classList.toggle("hidden",!isAdmin());
+  applyPermissions();
+  await loadAll();
  }catch(e){
-  msg("usersMessage","تعذر تحميل الموظفين: "+e.message);
+  msg("loginMessage","تعذر تحميل ملف المستخدم أو البيانات: "+e.message+" ("+e.code+")");
  }
-}
-
-$("refreshUsers").onclick=loadUsers;
-
-$("usersTable").onclick=async event=>{
- const uid=event.target.dataset.approve||event.target.dataset.permissions;
- if(!uid||!isAdmin())return;
-
- try{
-  const ref=doc(db,"users",uid);
-  const snap=await getDoc(ref);
-  if(!snap.exists())return;
-
-  const data=snap.data();
-
-  if(event.target.dataset.approve){
-   await updateDoc(ref,{
-    approved:data.approved!==true,
-    updatedAt:serverTimestamp()
-   });
-   await loadUsers();
-   return;
-  }
-
-  const perms={...defaultPermissions,...(data.permissions||{})};
-  const modal=document.createElement("div");
-
-  modal.style="position:fixed;inset:0;background:#0008;z-index:9999;overflow:auto;padding:15px";
-  modal.innerHTML=`
-   <div style="background:white;padding:20px;border-radius:12px;max-width:650px;margin:30px auto">
-   <h3>صلاحيات الموظف</h3>
-   <div id="permGrid" class="grid"></div>
-   <button id="savePerm">حفظ الصلاحيات</button>
-   <button id="closePerm" class="secondary">إغلاق</button>
-   </div>`;
-
-  document.body.appendChild(modal);
-
-  const grid=modal.querySelector("#permGrid");
-
-  Object.entries(permLabels).forEach(([key,label])=>{
-   const l=document.createElement("label");
-   l.innerHTML=`<input type="checkbox" data-key="${key}" ${perms[key]===true?"checked":""}>${label}`;
-   grid.appendChild(l);
-  });
-
-  modal.querySelector("#closePerm").onclick=()=>modal.remove();
-
-  modal.querySelector("#savePerm").onclick=async()=>{
-   const p={};
-   grid.querySelectorAll("input").forEach(i=>p[i.dataset.key]=i.checked);
-
-   try{
-    await updateDoc(ref,{permissions:p,updatedAt:serverTimestamp()});
-    modal.remove();
-    await loadUsers();
-    alert("تم حفظ الصلاحيات.");
-   }catch(e){alert(e.message)}
-  };
-
- }catch(e){alert(e.message)}
-};
-
-/* التنقل */
-function showTab(name){
- ["accounts","vouchers","lists","notes"].forEach(n=>{
-  $(n).classList.toggle("hidden",n!==name||!can(n+"View"));
- });
-}
-
-document.querySelectorAll("[data-tab]").forEach(btn=>{
- btn.onclick=()=>showTab(btn.dataset.tab);
 });
 
-function updateUI(){
- ["accounts","vouchers","lists","notes"].forEach(name=>{
-  const nav=document.querySelector(`[data-tab="${name}"]`);
-  nav.classList.toggle("hidden",!can(name+"View"));
-  $(name).classList.toggle("hidden",!can(name+"View"));
-
-  const form=$(name+"Form");
-  if(form)form.classList.toggle("hidden",!can(name+"Add")&&!editing[name]);
+function applyPermissions(){
+ const pages={
+  accounts:"accountsView",daily:"dailyView",vouchers:"vouchersView",
+  lists:"listsView",notes:"notesView",export:"exportData"
+ };
+ Object.entries(pages).forEach(([p,k])=>{
+  const b=document.querySelector(`[data-page="${p}"]`);
+  if(b)b.classList.toggle("hidden",!can(k));
  });
-
- $("exportBtn").disabled=!can("exportData");
 }
+function showPage(name){
+ document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+ $("page-"+name).classList.remove("hidden");
+ document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+}
+document.querySelectorAll("[data-page]").forEach(b=>{
+ b.onclick=()=>showPage(b.dataset.page);
+});
 
-/* تحميل البيانات */
-async function loadCollection(name){
- if(!can(name+"View"))return [];
-
+async function loadCol(name){
  const snap=await getDocs(collection(db,name));
  return snap.docs.map(d=>({id:d.id,...d.data()}));
 }
-
 async function loadAll(){
- accounts=await loadCollection("accounts");
- vouchers=await loadCollection("vouchers");
- lists=await loadCollection("lists");
- notes=await loadCollection("notes");
-
- renderAccounts();
- renderVouchers();
- renderLists();
- renderNotes();
- refreshAccountOptions();
+ accounts=await loadCol("accounts");
+ vouchers=await loadCol("vouchers");
+ lists=await loadCol("lists");
+ notes=await loadCol("notes");
+ dailyIncome=await loadCol("dailyIncome");
+ renderAll();
+}
+function accountName(id){
+ return accounts.find(a=>a.id===id)?.name||"غير محدد";
+}
+function accountType(t){
+ return ({supplier:"مورد",customer:"عميل",cash:"قاصّة / صندوق",bank:"مصرف",expense:"مصروفات",other:"أخرى"})[t]||t||"";
 }
 
-function refreshAccountOptions(){
- const opts=accounts.map(a=>
- `<option value="${esc(a.id)}">${esc(a.name)}</option>`
- ).join("");
+/* حساب الأرصدة من الحركات */
+function balances(){
+ const b={};
+ accounts.forEach(a=>b[a.id]=Number(a.balance||0));
 
- $("vAccount").innerHTML=opts;
- $("lAccount").innerHTML=opts;
-}
-
-function typeName(t){
- return({
- supplier:"مورد",customer:"عميل",cash:"صندوق نقدي",
- bank:"مصرف",expense:"مصروفات",other:"أخرى"
- })[t]||t||"";
-}
-
-function actions(name,id){
- let html="";
- if(can(name+"Edit"))html+=`<button data-edit="${id}" data-col="${name}">تعديل</button>`;
- if(can(name+"Delete"))html+=`<button class="danger" data-delete="${id}" data-col="${name}">حذف</button>`;
- return html;
-}
-
-function renderAccounts(){
- const q=$("searchAccounts").value.toLowerCase();
- $("accountsTable").innerHTML="";
-
- accounts.filter(a=>
- [a.name,a.phone,a.type].join(" ").toLowerCase().includes(q)
- ).forEach(a=>{
-  const tr=document.createElement("tr");
-  tr.innerHTML=`<td>${esc(a.name)}</td><td>${esc(typeName(a.type))}</td>
-  <td>${esc(a.phone)}</td><td>${esc(a.balance)}</td>
-  <td>${actions("accounts",a.id)}</td>`;
-  $("accountsTable").appendChild(tr);
+ lists.forEach(l=>{
+  if(!(l.accountId in b))return;
+  const amount=Number(l.amount||0);
+  b[l.accountId]+=l.type==="return"?-amount:amount;
  });
-}
 
-function renderVouchers(){
- const q=$("searchVouchers").value.toLowerCase();
- $("vouchersTable").innerHTML="";
-
- vouchers.filter(v=>
- [v.accountName,v.description,v.date,v.amount].join(" ").toLowerCase().includes(q)
- ).forEach(v=>{
-  const tr=document.createElement("tr");
-  tr.innerHTML=`<td>${v.type==="receipt"?"استلام":"دفع"}</td>
-  <td>${esc(v.accountName)}</td><td>${esc(v.date)}</td>
-  <td>${esc(v.amount)}</td><td>${esc(v.description)}</td>
-  <td>${actions("vouchers",v.id)}</td>`;
-  $("vouchersTable").appendChild(tr);
- });
-}
-
-function renderLists(){
- const q=$("searchLists").value.toLowerCase();
- $("listsTable").innerHTML="";
-
- lists.filter(l=>
- [l.number,l.accountName,l.date,l.description].join(" ").toLowerCase().includes(q)
- ).forEach(l=>{
-  const tr=document.createElement("tr");
-  tr.innerHTML=`<td>${esc(l.number)}</td><td>${esc(l.type)}</td>
-  <td>${esc(l.accountName)}</td><td>${esc(l.date)}</td>
-  <td>${esc(l.amount)}</td><td>${actions("lists",l.id)}</td>`;
-  $("listsTable").appendChild(tr);
- });
-}
-
-function renderNotes(){
- const q=$("searchNotes").value.toLowerCase();
- $("notesTable").innerHTML="";
-
- notes.filter(n=>
- [n.title,n.body].join(" ").toLowerCase().includes(q)
- ).forEach(n=>{
-  const li=document.createElement("li");
-  li.innerHTML=`<b>${esc(n.title)}</b> — ${esc(n.body)} ${actions("notes",n.id)}`;
-  $("notesTable").appendChild(li);
- });
-}
-
-[
- ["searchAccounts",renderAccounts],
- ["searchVouchers",renderVouchers],
- ["searchLists",renderLists],
- ["searchNotes",renderNotes]
-].forEach(([id,fn])=>$(id).addEventListener("input",fn));
-
-/* نماذج الإدخال */
-const fields={
- accounts:{aName:"name",aType:"type",aPhone:"phone",aBalance:"balance",aNotes:"notes"},
- vouchers:{vType:"type",vAccount:"accountId",vDate:"date",vAmount:"amount",vMethod:"method",vDescription:"description",vNotes:"notes"},
- lists:{lType:"type",lNumber:"number",lAccount:"accountId",lDate:"date",lAmount:"amount",lDescription:"description",lNotes:"notes"},
- notes:{nTitle:"title",nBody:"body"}
-};
-
-const saveIds={
- accounts:"saveAccount",vouchers:"saveVoucher",lists:"saveList",notes:"saveNote"
-};
-
-const cancelIds={
- accounts:"cancelAccount",vouchers:"cancelVoucher",lists:"cancelList",notes:"cancelNote"
-};
-
-function resetForm(name){
- editing[name]=null;
-
- Object.keys(fields[name]).forEach(id=>$(id).value="");
-
- if(name==="accounts")$("aBalance").value="0";
-
- $(cancelIds[name]).classList.add("hidden");
- $(saveIds[name]).textContent="حفظ";
-
- updateUI();
-}
-
-Object.entries(cancelIds).forEach(([name,id])=>{
- $(id).onclick=()=>resetForm(name);
-});
-
-async function saveRecord(name,data){
- const id=editing[name];
- if(!can(name+(id?"Edit":"Add"))){
-  alert("ليس لديك صلاحية تنفيذ هذه العملية.");
-  return;
- }
-
- const btn=$(saveIds[name]);
- btn.disabled=true;
-
- try{
-  if(id){
-   await updateDoc(doc(db,name,id),{...data,updatedAt:serverTimestamp()});
-  }else{
-   await addDoc(collection(db,name),{
-    ...data,createdBy:currentUser.uid,createdAt:serverTimestamp()
-   });
+ vouchers.forEach(v=>{
+  const amount=Number(v.amount||0);
+  if(v.accountId in b){
+   b[v.accountId]+=v.type==="payment"?amount:-amount;
   }
+  if(v.movementAccountId in b){
+   b[v.movementAccountId]+=v.type==="payment"?-amount:amount;
+  }
+ });
 
-  resetForm(name);
-  await loadAll();
-  alert("تم الحفظ بنجاح.");
- }catch(e){
-  alert("تعذر الحفظ:\n"+e.message);
- }finally{
-  btn.disabled=false;
- }
+ dailyIncome.forEach(d=>{
+  if(d.cashAccountId in b)b[d.cashAccountId]+=Number(d.cashSales||0)-Number(d.expenses||0);
+  if(d.bankAccountId in b)b[d.bankAccountId]+=Number(d.electronicSales||0);
+  if(d.customerAccountId in b)b[d.customerAccountId]+=Number(d.creditSales||0);
+ });
+ return b;
+}
+function renderAll(){
+ renderAccounts();renderDaily();renderVouchers();renderLists();renderNotes();
+ fillAccountOptions();renderDashboard();
+}
+function fillSelect(id,filter){
+ const arr=accounts.filter(filter);
+ $(id).innerHTML='<option value="">-- اختر الحساب --</option>'+
+ arr.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join("");
+}
+function fillAccountOptions(){
+ fillSelect("vAccount",()=>true);
+ fillSelect("lAccount",()=>true);
+ fillSelect("statementAccount",()=>true);
+ fillSelect("vMovement",a=>["cash","bank","other"].includes(a.type));
+ fillSelect("dCashAccount",a=>a.type==="cash");
+ fillSelect("dBankAccount",a=>a.type==="bank");
+ fillSelect("dCustomerAccount",a=>a.type==="customer");
+}
+function renderDashboard(){
+ const b=balances();
+ const cash=accounts.filter(a=>a.type==="cash").reduce((s,a)=>s+(b[a.id]||0),0);
+ const bank=accounts.filter(a=>a.type==="bank").reduce((s,a)=>s+(b[a.id]||0),0);
+ const total=Object.values(b).reduce((s,v)=>s+v,0);
+ const d=dailyIncome.find(x=>x.date===today());
+ $("cashStat").textContent=money(cash);
+ $("bankStat").textContent=money(bank);
+ $("accountsStat").textContent=money(total);
+ $("todayCashStat").textContent=money(d?.cashSales||0);
+ $("dashboardAccounts").innerHTML=accounts.map(a=>`
+ <tr><td>${esc(a.name)}</td><td>${esc(accountType(a.type))}</td>
+ <td>${money(a.balance)}</td><td>${money(b[a.id])}</td></tr>`).join("");
 }
 
-$("saveAccount").onclick=()=>{
- const name=$("aName").value.trim();
- const balance=Number($("aBalance").value||0);
-
+/* الحسابات */
+function renderAccounts(){
+ const q=$("searchAccounts").value.toLowerCase(),b=balances();
+ $("accountsTable").innerHTML=accounts.filter(a=>
+ [a.name,a.phone,a.type].join(" ").toLowerCase().includes(q)
+ ).map(a=>`<tr>
+ <td>${esc(a.name)}</td><td>${esc(accountType(a.type))}</td>
+ <td>${esc(a.phone)}</td><td>${money(a.balance)}</td>
+ <td>${money(b[a.id])}</td>
+ <td class="actions">
+ <button data-edit-account="${a.id}">تعديل</button>
+ <button class="danger" data-delete-account="${a.id}">حذف</button>
+ </td></tr>`).join("");
+}
+$("searchAccounts").oninput=renderAccounts;
+$("saveAccount").onclick=async()=>{
+ if(!can(editingAccount?"accountsEdit":"accountsAdd"))return alert("ليست لديك صلاحية.");
+ const name=$("aName").value.trim(),balance=Number($("aBalance").value||0);
  if(!name)return alert("أدخل اسم الحساب.");
  if(!Number.isFinite(balance))return alert("الرصيد غير صحيح.");
+ const data={name,type:$("aType").value,phone:$("aPhone").value.trim(),balance,notes:$("aNotes").value.trim()};
+ try{
+  if(editingAccount)await updateDoc(doc(db,"accounts",editingAccount),{...data,updatedAt:serverTimestamp()});
+  else await addDoc(collection(db,"accounts"),{...data,createdAt:serverTimestamp(),createdBy:currentUser.uid});
+  resetAccountForm();await loadAll();alert("تم حفظ الحساب.");
+ }catch(e){alert("تعذر الحفظ: "+e.message)}
+};
+function resetAccountForm(){
+ editingAccount=null;
+ ["aName","aPhone","aNotes"].forEach(id=>$(id).value="");
+ $("aBalance").value="0";$("aType").value="supplier";
+ $("saveAccount").textContent="حفظ الحساب";
+ $("cancelAccount").classList.add("hidden");
+}
+$("cancelAccount").onclick=resetAccountForm;
 
- saveRecord("accounts",{
-  name,type:$("aType").value,phone:$("aPhone").value.trim(),
-  balance,notes:$("aNotes").value.trim()
- });
+/* الوارد اليومي */
+function renderDaily(){
+ const q=$("searchDaily").value;
+ $("dailyTable").innerHTML=dailyIncome.filter(d=>String(d.date||"").includes(q))
+ .sort((a,b)=>(b.date||"").localeCompare(a.date||""))
+ .map(d=>`<tr>
+ <td>${esc(d.date)}</td><td>${money(d.cashSales)}</td>
+ <td>${money(d.electronicSales)}</td><td>${money(d.creditSales)}</td>
+ <td>${money(d.expenses)}</td>
+ <td>${money(Number(d.cashSales||0)-Number(d.expenses||0))}</td>
+ <td class="actions"><button data-edit-daily="${d.id}">عرض</button></td>
+ </tr>`).join("");
+}
+$("searchDaily").oninput=renderDaily;
+$("resetDaily").onclick=()=>{
+ ["dCash","dElectronic","dCredit","dExpenses","dNotes"].forEach(id=>$(id).value=id==="dNotes"?"":"0");
+ $("dDate").value=today();
+};
+$("saveDaily").onclick=async()=>{
+ if(!can("dailyAdd"))return alert("ليست لديك صلاحية.");
+ const date=$("dDate").value;
+ const cashSales=Number($("dCash").value||0);
+ const electronicSales=Number($("dElectronic").value||0);
+ const creditSales=Number($("dCredit").value||0);
+ const expenses=Number($("dExpenses").value||0);
+ const cashAccountId=$("dCashAccount").value;
+ const bankAccountId=$("dBankAccount").value;
+ const customerAccountId=$("dCustomerAccount").value;
+ if(!date)return alert("حدد التاريخ.");
+ if([cashSales,electronicSales,creditSales,expenses].some(x=>!Number.isFinite(x)||x<0))
+  return alert("تأكد من صحة المبالغ.");
+ if(cashSales>0&&!cashAccountId)return alert("اختر القاصّة للمبيعات النقدية.");
+ if(electronicSales>0&&!bankAccountId)return alert("اختر المصرف للمبيعات الإلكترونية.");
+ if(creditSales>0&&!customerAccountId)return alert("اختر حساب العملاء للمبيعات الآجلة.");
+ const old=dailyIncome.find(x=>x.date===date);
+ if(old&&!confirm("يوجد سجل لهذا التاريخ. هل تريد استبداله؟"))return;
+ const data={date,cashSales,electronicSales,creditSales,expenses,
+ cashAccountId:cashSales||expenses?cashAccountId:"",
+ bankAccountId:electronicSales?bankAccountId:"",
+ customerAccountId:creditSales?customerAccountId:"",
+ notes:$("dNotes").value.trim(),posted:true,updatedAt:serverTimestamp()};
+ try{
+  await setDoc(doc(db,"dailyIncome",date),{
+   ...data,...(!old?{createdAt:serverTimestamp(),createdBy:currentUser.uid}:{})
+  },{merge:false});
+  msg("dailyMessage","تم حفظ وترحيل الوارد اليومي.",true);
+  await loadAll();
+ }catch(e){msg("dailyMessage","تعذر الحفظ: "+e.message)}
 };
 
-$("saveVoucher").onclick=()=>{
- const accountId=$("vAccount").value;
- const account=accounts.find(a=>a.id===accountId);
+/* السندات */
+function renderVouchers(){
+ const q=$("searchVouchers").value.toLowerCase();
+ $("vouchersTable").innerHTML=vouchers.filter(v=>
+ [v.accountName,v.description,v.date,v.amount].join(" ").toLowerCase().includes(q)
+ ).sort((a,b)=>(b.date||"").localeCompare(a.date||""))
+ .map(v=>`<tr>
+ <td>${v.type==="receipt"?"استلام":"دفع"}</td>
+ <td>${esc(v.accountName||accountName(v.accountId))}</td>
+ <td>${esc(v.movementAccountName||accountName(v.movementAccountId)||"مصدر خارجي")}</td>
+ <td>${esc(v.date)}</td><td>${money(v.amount)}</td>
+ <td>${esc(v.description)}</td>
+ <td class="actions"><button class="danger" data-delete-voucher="${v.id}">حذف</button></td>
+ </tr>`).join("");
+}
+$("searchVouchers").oninput=renderVouchers;
+$("vType").onchange=()=>{
+ $("vSource").value=$("vType").value==="receipt"?"account":"account";
+};
+$("saveVoucher").onclick=async()=>{
+ if(!can("vouchersAdd"))return alert("ليست لديك صلاحية.");
+ const type=$("vType").value,accountId=$("vAccount").value;
+ const movementAccountId=$("vMovement").value;
  const amount=Number($("vAmount").value);
-
- if(!accountId)return alert("اختر الحساب.");
+ const date=$("vDate").value,source=$("vSource").value;
+ if(!accountId)return alert("اختر الحساب المقابل.");
  if(!Number.isFinite(amount)||amount<=0)return alert("أدخل مبلغاً صحيحاً.");
-
- saveRecord("vouchers",{
-  type:$("vType").value,accountId,accountName:account?.name||"",
-  date:$("vDate").value,amount,method:$("vMethod").value,
-  description:$("vDescription").value.trim(),notes:$("vNotes").value.trim()
- });
+ if(!date)return alert("حدد التاريخ.");
+ if(source!=="external"&&!movementAccountId)return alert("اختر حساب الحركة المالية.");
+ if(source==="daily"&&type!=="receipt")return alert("الوارد اليومي مصدر لسند الاستلام فقط.");
+ const account=accounts.find(a=>a.id===accountId);
+ const movement=accounts.find(a=>a.id===movementAccountId);
+ const data={
+  type,accountId,accountName:account?.name||"",
+  movementAccountId:source==="external"?"":movementAccountId,
+  movementAccountName:source==="external"?"مصدر خارجي":movement?.name||"",
+  source,date,amount,method:$("vMethod").value,
+  description:$("vDescription").value.trim(),
+  notes:$("vNotes").value.trim(),
+  createdBy:currentUser.uid,createdAt:serverTimestamp()
+ };
+ try{
+  await addDoc(collection(db,"vouchers"),data);
+  ["vAmount","vDescription","vNotes"].forEach(id=>$(id).value="");
+  msg("voucherMessage","تم حفظ السند.",true);await loadAll();
+ }catch(e){msg("voucherMessage","تعذر حفظ السند: "+e.message)}
 };
 
-$("saveList").onclick=()=>{
- const accountId=$("lAccount").value;
- const account=accounts.find(a=>a.id===accountId);
- const number=$("lNumber").value.trim();
- const amount=Number($("lAmount").value||0);
-
+/* القوائم */
+function renderLists(){
+ const q=$("searchLists").value.toLowerCase();
+ $("listsTable").innerHTML=lists.filter(l=>
+ [l.number,l.accountName,l.date,l.description].join(" ").toLowerCase().includes(q)
+ ).map(l=>`<tr><td>${esc(l.number)}</td>
+ <td>${({incoming:"واردة",outgoing:"صادرة",return:"استرجاع"})[l.type]||esc(l.type)}</td>
+ <td>${esc(l.accountName||accountName(l.accountId))}</td>
+ <td>${esc(l.date)}</td><td>${money(l.amount)}</td>
+ <td class="actions"><button class="danger" data-delete-list="${l.id}">حذف</button></td></tr>`).join("");
+}
+$("searchLists").oninput=renderLists;
+$("saveList").onclick=async()=>{
+ if(!can("listsAdd"))return alert("ليست لديك صلاحية.");
+ const accountId=$("lAccount").value,account=accounts.find(a=>a.id===accountId);
+ const number=$("lNumber").value.trim(),amount=Number($("lAmount").value||0);
  if(!number||!accountId)return alert("أدخل رقم القائمة واختر الحساب.");
  if(!Number.isFinite(amount)||amount<0)return alert("المبلغ غير صحيح.");
-
- saveRecord("lists",{
-  type:$("lType").value,number,accountId,
-  accountName:account?.name||"",date:$("lDate").value,
-  amount,description:$("lDescription").value.trim(),
-  notes:$("lNotes").value.trim()
- });
+ try{
+  await addDoc(collection(db,"lists"),{
+   type:$("lType").value,number,accountId,accountName:account?.name||"",
+   date:$("lDate").value,amount,description:$("lDescription").value.trim(),
+   notes:$("lNotes").value.trim(),createdAt:serverTimestamp(),createdBy:currentUser.uid
+  });
+  ["lNumber","lAmount","lDescription","lNotes"].forEach(id=>$(id).value="");
+  msg("listMessage","تم حفظ القائمة.",true);await loadAll();
+ }catch(e){msg("listMessage","تعذر الحفظ: "+e.message)}
 };
 
-$("saveNote").onclick=()=>{
- const title=$("nTitle").value.trim();
- const body=$("nBody").value.trim();
+/* كشف الحساب */
+$("showStatement").onclick=()=>{
+ const id=$("statementAccount").value;
+ if(!id)return alert("اختر الحساب.");
+ const from=$("statementFrom").value,to=$("statementTo").value;
+ if(from&&to&&from>to)return alert("تاريخ البداية أكبر من النهاية.");
+ const a=accounts.find(x=>x.id===id);
+ let opening=Number(a?.balance||0),rows=[];
+ lists.filter(x=>x.accountId===id).forEach(x=>{
+  const amount=Number(x.amount||0);
+  rows.push({date:x.date||"",title:"قائمة "+(x.number||"")+" - "+x.type,
+   debit:x.type==="return"?-amount:amount,credit:0});
+ });
+ vouchers.forEach(x=>{
+  const amount=Number(x.amount||0);
+  if(x.accountId===id)rows.push({date:x.date||"",title:"سند "+(x.type==="payment"?"دفع":"استلام"),
+   debit:x.type==="payment"?amount:0,credit:x.type==="receipt"?amount:0});
+  if(x.movementAccountId===id)rows.push({date:x.date||"",title:"حركة سند "+(x.type==="payment"?"دفع":"استلام"),
+   debit:x.type==="receipt"?amount:0,credit:x.type==="payment"?amount:0});
+ });
+ dailyIncome.forEach(x=>{
+  if(x.cashAccountId===id)rows.push({date:x.date,title:"الوارد النقدي اليومي",debit:Number(x.cashSales||0)-Number(x.expenses||0),credit:0});
+  if(x.bankAccountId===id)rows.push({date:x.date,title:"المبيعات الإلكترونية",debit:Number(x.electronicSales||0),credit:0});
+  if(x.customerAccountId===id)rows.push({date:x.date,title:"المبيعات الآجلة",debit:Number(x.creditSales||0),credit:0});
+ });
+ rows.sort((a,b)=>a.date.localeCompare(b.date));
+ let balance=opening;
+ const body=rows.filter(x=>(!from||!x.date||x.date>=from)&&(!to||!x.date||x.date<=to))
+ .map(x=>{
+  balance+=x.debit-x.credit;
+  return `<tr><td>${esc(x.date)}</td><td>${esc(x.title)}</td><td>${money(x.debit)}</td><td>${money(x.credit)}</td><td>${money(balance)}</td></tr>`;
+ }).join("");
+ $("statementResult").innerHTML=`
+ <h3>كشف حساب: ${esc(a.name)}</h3>
+ <p>الرصيد الافتتاحي: ${money(opening)}</p>
+ <div class="table-wrap"><table>
+ <thead><tr><th>التاريخ</th><th>البيان</th><th>مدين / زيادة</th><th>دائن / تخفيض</th><th>الرصيد</th></tr></thead>
+ <tbody>${body}</tbody></table></div>
+ <h3>الرصيد الختامي: ${money(balance)}</h3>`;
+};
+$("printStatement").onclick=()=>window.print();
 
- if(!title&&!body)return alert("أدخل عنوان الملاحظة أو نصها.");
- saveRecord("notes",{title,body});
+/* الملاحظات */
+function renderNotes(){
+ const q=$("searchNotes").value.toLowerCase();
+ $("notesTable").innerHTML=notes.filter(n=>
+ [n.title,n.body].join(" ").toLowerCase().includes(q)
+ ).map(n=>`<li><b>${esc(n.title)}</b> — ${esc(n.body)}
+ <button class="danger" data-delete-note="${n.id}">حذف</button></li>`).join("");
+}
+$("searchNotes").oninput=renderNotes;
+$("saveNote").onclick=async()=>{
+ if(!can("notesAdd"))return alert("ليست لديك صلاحية.");
+ const title=$("nTitle").value.trim(),body=$("nBody").value.trim();
+ if(!title&&!body)return alert("أدخل عنواناً أو ملاحظة.");
+ try{
+  await addDoc(collection(db,"notes"),{title,body,createdAt:serverTimestamp(),createdBy:currentUser.uid});
+  $("nTitle").value="";$("nBody").value="";await loadAll();alert("تم حفظ الملاحظة.");
+ }catch(e){alert(e.message)}
 };
 
-/* تعديل وحذف السجلات */
-document.body.addEventListener("click",async event=>{
- const btn=event.target.closest("[data-edit],[data-delete]");
- if(!btn)return;
-
- const name=btn.dataset.col;
- const id=btn.dataset.edit||btn.dataset.delete;
-
- if(btn.dataset.delete){
-  if(!can(name+"Delete"))return alert("لا توجد صلاحية للحذف.");
-  if(!confirm("هل تريد حذف السجل؟"))return;
-
-  try{
-   await deleteDoc(doc(db,name,id));
-   await loadAll();
-  }catch(e){alert(e.message)}
-  return;
- }
-
- if(!can(name+"Edit"))return alert("لا توجد صلاحية للتعديل.");
-
- const record=({accounts,vouchers,lists,notes})[name].find(x=>x.id===id);
- if(!record)return;
-
- editing[name]=id;
-
- Object.entries(fields[name]).forEach(([input,key])=>{
-  $(input).value=record[key]??"";
- });
-
- $(cancelIds[name]).classList.remove("hidden");
- $(saveIds[name]).textContent="حفظ التعديلات";
-
- showTab(name);
- updateUI();
+/* حذف السجلات */
+document.body.addEventListener("click",async e=>{
+ const b=e.target.closest("button");
+ if(!b)return;
+ try{
+  if(b.dataset.editAccount){
+   if(!can("accountsEdit"))return alert("ليست لديك صلاحية التعديل.");
+   const a=accounts.find(x=>x.id===b.dataset.editAccount);if(!a)return;
+   editingAccount=a.id;
+   $("aName").value=a.name||"";$("aType").value=a.type||"other";
+   $("aPhone").value=a.phone||"";$("aBalance").value=a.balance||0;
+   $("aNotes").value=a.notes||"";
+   $("saveAccount").textContent="حفظ التعديلات";
+   $("cancelAccount").classList.remove("hidden");showPage("accounts");
+  }
+  if(b.dataset.deleteAccount){
+   if(!can("accountsDelete"))return alert("ليست لديك صلاحية الحذف.");
+   const id=b.dataset.deleteAccount;
+   if(!confirm("حذف الحساب؟ لا تحذف حساباً مرتبطاً بحركات مالية."))return;
+   const used=vouchers.some(x=>x.accountId===id||x.movementAccountId===id)||
+   lists.some(x=>x.accountId===id)||dailyIncome.some(x=>[x.cashAccountId,x.bankAccountId,x.customerAccountId].includes(id));
+   if(used)return alert("لا يمكن حذف الحساب لوجود حركات مرتبطة به.");
+   await deleteDoc(doc(db,"accounts",id));await loadAll();
+  }
+  if(b.dataset.deleteVoucher){
+   if(!can("vouchersDelete"))return alert("ليست لديك صلاحية.");
+   if(!confirm("حذف السند؟"))return;
+   await deleteDoc(doc(db,"vouchers",b.dataset.deleteVoucher));await loadAll();
+  }
+  if(b.dataset.deleteList){
+   if(!can("listsDelete"))return alert("ليست لديك صلاحية.");
+   if(!confirm("حذف القائمة؟"))return;
+   await deleteDoc(doc(db,"lists",b.dataset.deleteList));await loadAll();
+  }
+  if(b.dataset.deleteNote){
+   if(!can("notesDelete"))return alert("ليست لديك صلاحية.");
+   if(!confirm("حذف الملاحظة؟"))return;
+   await deleteDoc(doc(db,"notes",b.dataset.deleteNote));await loadAll();
+  }
+  if(b.dataset.editDaily){
+   const d=dailyIncome.find(x=>x.id===b.dataset.editDaily||x.date===b.dataset.editDaily);
+   if(!d)return;
+   $("dDate").value=d.date||"";
+   $("dCash").value=d.cashSales||0;$("dElectronic").value=d.electronicSales||0;
+   $("dCredit").value=d.creditSales||0;$("dExpenses").value=d.expenses||0;
+   $("dCashAccount").value=d.cashAccountId||"";
+   $("dBankAccount").value=d.bankAccountId||"";
+   $("dCustomerAccount").value=d.customerAccountId||"";
+   $("dNotes").value=d.notes||"";showPage("daily");
+  }
+ }catch(err){alert("حدث خطأ: "+err.message)}
 });
 
-/* تصدير CSV المتوافق مع Excel */
-function csvCell(value){
- return '"'+String(value??"").replace(/"/g,'""')+'"';
+/* الموظفون: اعتماد أو إيقاف */
+async function loadUsers(){
+ if(!isAdmin())return;
+ msg("usersMessage","جار تحميل الموظفين...",true);
+ try{
+  const users=await loadCol("users");
+  $("usersTable").innerHTML=users.filter(u=>(u.email||"").toLowerCase()!==ADMIN_EMAIL)
+  .map(u=>`<tr><td>${esc(u.email)}</td>
+  <td>${u.approved===true?"معتمد":"بانتظار الموافقة / موقوف"}</td>
+  <td><button data-user-toggle="${u.id}">${u.approved===true?"إيقاف":"اعتماد"}</button></td></tr>`).join("");
+  msg("usersMessage","تم تحميل الموظفين.",true);
+ }catch(e){msg("usersMessage","تعذر تحميل الموظفين: "+e.message)}
 }
+$("refreshUsers").onclick=loadUsers;
+$("usersTable").onclick=async e=>{
+ const b=e.target.closest("[data-user-toggle]");if(!b||!isAdmin())return;
+ const ref=doc(db,"users",b.dataset.userToggle),snap=await getDoc(ref);
+ if(!snap.exists())return;
+ await updateDoc(ref,{approved:snap.data().approved!==true,updatedAt:serverTimestamp()});
+ await loadUsers();
+};
 
+/* تصدير CSV */
+function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
 function downloadCSV(filename,rows){
  const csv="\uFEFF"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n");
  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
-
- a.href=url;
- a.download=filename;
- document.body.appendChild(a);
- a.click();
- a.remove();
-
- setTimeout(()=>URL.revokeObjectURL(url),1000);
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1200);
 }
-
 $("exportBtn").onclick=()=>{
- if(!can("exportData"))return alert("لا توجد صلاحية للتصدير.");
-
- const from=$("exportFrom").value;
- const to=$("exportTo").value;
-
+ if(!can("exportData"))return alert("ليست لديك صلاحية التصدير.");
+ const from=$("exportFrom").value,to=$("exportTo").value;
  if(from&&to&&from>to)return alert("تاريخ البداية أكبر من النهاية.");
-
- const inRange=x=>{
-  const d=x.date||"";
-  return(!from||!d||d>=from)&&(!to||!d||d<=to);
- };
-
- const rows=[];
-
+ const range=x=>(!from||!x||x>=from)&&(!to||!x||x<=to);
+ let rows=[];
  if($("exAccounts").checked){
-  rows.push(["الحسابات"]);
-  rows.push(["الاسم","النوع","الهاتف","الرصيد","ملاحظات"]);
-  accounts.forEach(a=>rows.push([a.name,typeName(a.type),a.phone,a.balance,a.notes]));
+  rows.push(["الحسابات"],["الاسم","النوع","الهاتف","الرصيد الافتتاحي","الرصيد الحالي"]);
+  const b=balances();accounts.forEach(a=>rows.push([a.name,accountType(a.type),a.phone,a.balance,b[a.id]]));
  }
-
  if($("exVouchers").checked){
-  rows.push([]);
-  rows.push(["السندات"]);
-  rows.push(["النوع","الحساب","التاريخ","المبلغ","طريقة الدفع","البيان"]);
-  vouchers.filter(inRange).forEach(v=>rows.push([
-   v.type==="receipt"?"استلام":"دفع",
-   v.accountName,v.date,v.amount,v.method,v.description
-  ]));
+  rows.push([],["السندات"],["النوع","الحساب","حساب الحركة","التاريخ","المبلغ","البيان"]);
+  vouchers.filter(v=>range(v.date)).forEach(v=>rows.push([v.type,v.accountName,v.movementAccountName,v.date,v.amount,v.description]));
  }
-
  if($("exLists").checked){
-  rows.push([]);
-  rows.push(["القوائم"]);
-  rows.push(["رقم القائمة","النوع","الحساب","التاريخ","المبلغ","البيان"]);
-  lists.filter(inRange).forEach(l=>rows.push([
-   l.number,l.type,l.accountName,l.date,l.amount,l.description
-  ]));
+  rows.push([],["القوائم"],["الرقم","النوع","الحساب","التاريخ","المبلغ"]);
+  lists.filter(l=>range(l.date)).forEach(l=>rows.push([l.number,l.type,l.accountName,l.date,l.amount]));
  }
-
+ if($("exDaily").checked){
+  rows.push([],["الوارد اليومي"],["التاريخ","النقدي","الإلكتروني","الآجل","المصروفات","الصافي النقدي"]);
+  dailyIncome.filter(d=>range(d.date)).forEach(d=>rows.push([d.date,d.cashSales,d.electronicSales,d.creditSales,d.expenses,Number(d.cashSales||0)-Number(d.expenses||0)]));
+ }
  if($("exNotes").checked){
-  rows.push([]);
-  rows.push(["الملاحظات"]);
-  rows.push(["العنوان","النص"]);
+  rows.push([],["الملاحظات"],["العنوان","النص"]);
   notes.forEach(n=>rows.push([n.title,n.body]));
  }
-
- if(!rows.length)return alert("حدد بيانات للتصدير.");
-
+ if(!rows.length)return alert("حدد البيانات المطلوب تصديرها.");
  downloadCSV("pharmacy-accounting.csv",rows);
- msg("exportMessage","تم تنزيل CSV. افتحه في Excel ثم احفظه بصيغة XLSX.",true);
+ msg("exportMessage","تم تنزيل الملف. افتحه باستخدام Excel ثم احفظه بصيغة XLSX.",true);
 };
 
-/* أخطاء تحميل البيانات */
-window.addEventListener("error",event=>{
- console.error("JavaScript error:",event.message);
+/* تحميل الموظفين عند دخول المدير */
+const oldLoadAll=loadAll;
+const originalShowPage=showPage;
+document.querySelector('[data-page="employees"]').addEventListener("click",()=>{
+ if(isAdmin())loadUsers();
 });
-
-window.addEventListener("unhandledrejection",event=>{
- console.error("Unhandled error:",event.reason);
-});
+window.addEventListener("error",e=>console.error(e.message));
+window.addEventListener("unhandledrejection",e=>console.error(e.reason));
 </script>
 </body>
 </html>
