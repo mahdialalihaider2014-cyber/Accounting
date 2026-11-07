@@ -1,238 +1,211 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>برنامج إدارة حسابات الصيدلية</title>
+
 <style>
-:root{--primary:#087f8c;--dark:#155e75;--bg:#f3f7f9;--text:#18313b;--danger:#b42318;--success:#087f46}
+:root{
+ --primary:#087f8c;
+ --dark:#155e75;
+ --bg:#f3f7f9;
+ --text:#18313b;
+ --danger:#b42318;
+ --success:#087f46;
+}
 *{box-sizing:border-box}
 body{font-family:Tahoma,Arial,sans-serif;background:var(--bg);margin:0;color:var(--text)}
-header{background:var(--dark);color:white;padding:18px;text-align:center}
+header{background:var(--dark);color:white;text-align:center;padding:18px}
 main{max-width:1200px;margin:auto;padding:15px}
 .card{background:white;padding:18px;margin-bottom:15px;border-radius:12px;box-shadow:0 2px 8px #0000000d}
-input,select,textarea{width:100%;padding:11px;margin:5px 0 12px;border:1px solid #ccc;border-radius:8px;font:15px Tahoma,Arial,sans-serif}
-textarea{min-height:75px}
-button{background:var(--primary);color:white;border:0;padding:11px 16px;border-radius:8px;cursor:pointer;margin:4px;font-family:inherit}
+input,select,textarea{width:100%;padding:11px;margin:5px 0 12px;border:1px solid #ccc;border-radius:8px;font:15px Tahoma}
+textarea{min-height:70px}
+button{background:var(--primary);color:white;border:0;padding:11px 15px;border-radius:8px;cursor:pointer;margin:4px;font-family:inherit}
 button:hover{background:var(--dark)}
-button:disabled{opacity:.6;cursor:not-allowed}
-button.secondary{background:#64748b}
-button.danger{background:var(--danger)}
+button:disabled{opacity:.5}
+.secondary{background:#64748b}
+.danger{background:var(--danger)}
 .hidden{display:none!important}
-nav{display:flex;flex-wrap:wrap;margin-bottom:12px}
+nav{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:650px}
-th,td{border-bottom:1px solid #ddd;padding:9px;text-align:right;vertical-align:top}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{border-bottom:1px solid #ddd;padding:9px;text-align:right}
 th{background:#f0f6f8}
 label{font-weight:bold}
-.message{color:#b42318;font-weight:bold;white-space:pre-wrap}
+.message{white-space:pre-wrap;color:var(--danger);font-weight:bold}
 .success{color:var(--success)}
 .small{font-size:13px;color:#52636b}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.toolbar input,.toolbar select{max-width:280px}
-.permission-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
-.permission-grid label{font-weight:normal;background:#f6fafb;padding:9px;border-radius:7px}
-.permission-grid input{width:auto;margin:0 0 0 7px}
-@media(max-width:600px){
-header{padding:12px}
-h1{font-size:22px}
-.card{padding:12px}
-button{width:100%;margin:4px 0}
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.grid label{font-weight:normal;background:#f6fafb;padding:9px;border-radius:7px}
+.grid input{width:auto;margin:0 5px}
+@media(max-width:600px){button{max-width:100%}.card{padding:12px}}
 </style>
 </head>
+
 <body>
 <header>
 <h1>برنامج إدارة حسابات الصيدلية</h1>
-<p>الحسابات وسندات الدفع والاستلام والقوائم</p>
+<p>إدارة الحسابات والسندات والقوائم والموظفين</p>
 </header>
+
 <main>
 
-<div id="loginCard" class="card">
+<section id="loginCard" class="card">
 <h2>تسجيل الدخول</h2>
-<label for="email">البريد الإلكتروني</label>
-<input id="email" type="email" autocomplete="username" placeholder="أدخل البريد الإلكتروني">
-<label for="password">كلمة المرور</label>
-<input id="password" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور">
+<label>البريد الإلكتروني</label>
+<input id="email" type="email" autocomplete="username" placeholder="البريد الإلكتروني">
+<label>كلمة المرور</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="كلمة المرور">
 <button id="loginBtn">دخول</button>
 <p id="loginMessage" class="message"></p>
-</div>
+</section>
 
-<div id="pendingCard" class="card hidden">
+<section id="pendingCard" class="card hidden">
 <h2>الحساب بانتظار موافقة المدير</h2>
-<p>تم تسجيل الدخول، لكن المدير لم يعتمد حسابك أو لم يحدد صلاحياتك بعد.</p>
-<button id="pendingLogoutBtn">تسجيل الخروج</button>
-</div>
+<p>تم تسجيل الدخول، لكن المدير لم يعتمد حسابك بعد.</p>
+<button id="pendingLogout">تسجيل الخروج</button>
+</section>
 
 <div id="app" class="hidden">
-<div class="card">
-<h2>لوحة التحكم</h2>
-<p>مرحباً: <span id="welcome"></span></p>
-<p>الصلاحية: <span id="userRole"></span></p>
-<p class="small">البريد: <span id="currentEmail"></span></p>
-<button id="logoutBtn">تسجيل الخروج</button>
-</div>
 
-<div id="adminCard" class="card hidden">
+<section class="card">
+<h2>لوحة التحكم</h2>
+<p>المستخدم: <span id="currentEmail"></span></p>
+<p>نوع الحساب: <span id="role"></span></p>
+<button id="logoutBtn">تسجيل الخروج</button>
+</section>
+
+<section id="adminCard" class="card hidden">
 <h2>إدارة الموظفين والصلاحيات</h2>
-<p class="small">اعتمد الموظف ثم اختر الصلاحيات المناسبة. إيقاف الحساب يمنع الموظف من الوصول إلى البيانات.</p>
-<button id="refreshUsersBtn">تحديث الموظفين</button>
+<button id="refreshUsers">تحديث الموظفين</button>
 <p id="usersMessage" class="message"></p>
 <div class="table-wrap">
 <table>
-<thead><tr><th>البريد الإلكتروني</th><th>الاسم</th><th>الحالة</th><th>الصلاحيات</th><th>الإجراءات</th></tr></thead>
+<thead><tr><th>البريد</th><th>الاسم</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
 <tbody id="usersTable"></tbody>
 </table>
 </div>
-</div>
+</section>
 
-<div class="card">
+<section class="card">
 <h2>تصدير البيانات إلى Excel</h2>
-<p class="small">اختر البيانات والفترة. يتم تنزيل ملف CSV بترميز UTF-8 يدعم العربية ويفتح باستخدام Excel.</p>
-<div class="toolbar">
+<p class="small">يتم تنزيل ملف CSV متوافق مع Excel ويدعم اللغة العربية.</p>
 <label>من تاريخ</label><input id="exportFrom" type="date">
 <label>إلى تاريخ</label><input id="exportTo" type="date">
+<div class="grid">
+<label><input type="checkbox" id="exAccounts" checked> الحسابات</label>
+<label><input type="checkbox" id="exVouchers" checked> السندات</label>
+<label><input type="checkbox" id="exLists" checked> القوائم</label>
+<label><input type="checkbox" id="exNotes" checked> الملاحظات</label>
 </div>
-<div class="permission-grid">
-<label><input type="checkbox" id="exportAccounts" checked> الحسابات</label>
-<label><input type="checkbox" id="exportVouchers" checked> السندات</label>
-<label><input type="checkbox" id="exportLists" checked> القوائم</label>
-<label><input type="checkbox" id="exportNotes" checked> الملاحظات</label>
-</div>
-<button id="exportBtn">تصدير Excel</button>
+<button id="exportBtn">تصدير البيانات</button>
 <p id="exportMessage" class="message"></p>
-</div>
+</section>
 
 <nav>
-<button id="navAccounts" onclick="showTab('accounts')">الحسابات</button>
-<button id="navVouchers" onclick="showTab('vouchers')">السندات</button>
-<button id="navLists" onclick="showTab('lists')">القوائم</button>
-<button id="navNotes" onclick="showTab('notes')">الملاحظات</button>
+<button data-tab="accounts">الحسابات</button>
+<button data-tab="vouchers">السندات</button>
+<button data-tab="lists">القوائم</button>
+<button data-tab="notes">الملاحظات</button>
 </nav>
 
 <section id="accounts" class="card">
-<h2>إضافة حساب</h2>
+<h2>الحسابات</h2>
 <div id="accountForm">
-<label>اسم الحساب</label><input id="accountName" placeholder="اسم العميل أو المورد">
+<label>اسم الحساب</label><input id="aName">
 <label>نوع الحساب</label>
-<select id="accountType">
+<select id="aType">
 <option value="supplier">مورد</option>
 <option value="customer">عميل</option>
-<option value="source">مصدر</option>
 <option value="cash">صندوق نقدي</option>
 <option value="bank">مصرف</option>
 <option value="expense">مصروفات</option>
 <option value="other">أخرى</option>
 </select>
-<label>رقم الهاتف</label><input id="accountPhone" type="tel">
-<label>الرصيد الافتتاحي</label><input id="accountBalance" type="number" step="0.01" value="0">
-<label>ملاحظات</label><textarea id="accountNotes"></textarea>
+<label>رقم الهاتف</label><input id="aPhone">
+<label>الرصيد الافتتاحي</label><input id="aBalance" type="number" value="0">
+<label>ملاحظات</label><textarea id="aNotes"></textarea>
 <button id="saveAccount">حفظ الحساب</button>
-<button id="cancelAccountEdit" class="secondary hidden">إلغاء التعديل</button>
+<button id="cancelAccount" class="secondary hidden">إلغاء التعديل</button>
 </div>
-<div class="toolbar">
-<input id="accountSearch" placeholder="بحث في الحسابات">
-<button id="refreshAccountsBtn" class="secondary">تحديث</button>
-</div>
-<h3>الحسابات المسجلة</h3>
-<div class="table-wrap">
-<table>
-<thead><tr><th>اسم الحساب</th><th>النوع</th><th>الهاتف</th><th>الرصيد الافتتاحي</th><th>الإجراءات</th></tr></thead>
+<input id="searchAccounts" placeholder="بحث عن حساب">
+<div class="table-wrap"><table>
+<thead><tr><th>الاسم</th><th>النوع</th><th>الهاتف</th><th>الرصيد</th><th>الإجراءات</th></tr></thead>
 <tbody id="accountsTable"></tbody>
-</table>
-</div>
+</table></div>
 </section>
 
 <section id="vouchers" class="card hidden">
-<h2>سند دفع أو استلام</h2>
+<h2>السندات</h2>
 <div id="voucherForm">
 <label>نوع السند</label>
-<select id="voucherType">
-<option value="receipt">سند استلام</option>
-<option value="payment">سند دفع</option>
-</select>
-<label>الحساب</label><select id="voucherAccount"></select>
-<label>التاريخ</label><input id="voucherDate" type="date">
-<label>المبلغ</label><input id="voucherAmount" type="number" min="0.01" step="0.01">
+<select id="vType"><option value="receipt">استلام</option><option value="payment">دفع</option></select>
+<label>الحساب</label><select id="vAccount"></select>
+<label>التاريخ</label><input id="vDate" type="date">
+<label>المبلغ</label><input id="vAmount" type="number" min="0.01" step="0.01">
 <label>طريقة الدفع</label>
-<select id="voucherMethod">
-<option>نقداً</option>
-<option>تحويل مصرفي</option>
-<option>صك</option>
-<option>أخرى</option>
-</select>
-<label>البيان</label><input id="voucherDescription">
-<label>ملاحظات</label><textarea id="voucherNotes"></textarea>
+<select id="vMethod"><option>نقداً</option><option>تحويل مصرفي</option><option>صك</option><option>أخرى</option></select>
+<label>البيان</label><input id="vDescription">
+<label>ملاحظات</label><textarea id="vNotes"></textarea>
 <button id="saveVoucher">حفظ السند</button>
-<button id="cancelVoucherEdit" class="secondary hidden">إلغاء التعديل</button>
+<button id="cancelVoucher" class="secondary hidden">إلغاء التعديل</button>
 </div>
-<div class="toolbar">
-<input id="voucherSearch" placeholder="بحث في السندات">
-<button id="refreshVouchersBtn" class="secondary">تحديث</button>
-</div>
-<h3>السندات المسجلة</h3>
-<div class="table-wrap">
-<table>
-<thead><tr><th>النوع</th><th>الحساب</th><th>المبلغ</th><th>التاريخ</th><th>البيان</th><th>الإجراءات</th></tr></thead>
+<input id="searchVouchers" placeholder="بحث في السندات">
+<div class="table-wrap"><table>
+<thead><tr><th>النوع</th><th>الحساب</th><th>التاريخ</th><th>المبلغ</th><th>البيان</th><th>الإجراءات</th></tr></thead>
 <tbody id="vouchersTable"></tbody>
-</table>
-</div>
+</table></div>
 </section>
 
 <section id="lists" class="card hidden">
-<h2>القوائم الواردة والصادرة والاسترجاع</h2>
+<h2>القوائم</h2>
 <div id="listForm">
 <label>نوع القائمة</label>
-<select id="listType">
-<option value="incoming">قائمة واردة</option>
-<option value="outgoing">قائمة صادرة</option>
-<option value="return">قائمة استرجاع</option>
-</select>
-<label>رقم القائمة</label><input id="listNumber">
-<label>الحساب</label><select id="listAccount"></select>
-<label>التاريخ</label><input id="listDate" type="date">
-<label>المبلغ</label><input id="listAmount" type="number" min="0" step="0.01">
-<label>البيان</label><input id="listDescription">
-<label>ملاحظات</label><textarea id="listNotes"></textarea>
+<select id="lType"><option value="incoming">واردة</option><option value="outgoing">صادرة</option><option value="return">استرجاع</option></select>
+<label>رقم القائمة</label><input id="lNumber">
+<label>الحساب</label><select id="lAccount"></select>
+<label>التاريخ</label><input id="lDate" type="date">
+<label>المبلغ</label><input id="lAmount" type="number" min="0">
+<label>البيان</label><input id="lDescription">
+<label>ملاحظات</label><textarea id="lNotes"></textarea>
 <button id="saveList">حفظ القائمة</button>
-<button id="cancelListEdit" class="secondary hidden">إلغاء التعديل</button>
+<button id="cancelList" class="secondary hidden">إلغاء التعديل</button>
 </div>
-<div class="toolbar">
-<input id="listSearch" placeholder="بحث في القوائم">
-<button id="refreshListsBtn" class="secondary">تحديث</button>
-</div>
-<h3>القوائم المسجلة</h3>
-<div class="table-wrap">
-<table>
-<thead><tr><th>رقم القائمة</th><th>النوع</th><th>الحساب</th><th>المبلغ</th><th>التاريخ</th><th>الإجراءات</th></tr></thead>
+<input id="searchLists" placeholder="بحث في القوائم">
+<div class="table-wrap"><table>
+<thead><tr><th>رقم</th><th>النوع</th><th>الحساب</th><th>التاريخ</th><th>المبلغ</th><th>الإجراءات</th></tr></thead>
 <tbody id="listsTable"></tbody>
-</table>
-</div>
+</table></div>
 </section>
 
 <section id="notes" class="card hidden">
 <h2>الملاحظات</h2>
 <div id="noteForm">
-<label>عنوان الملاحظة</label><input id="noteTitle">
-<label>الملاحظة</label><textarea id="noteText"></textarea>
+<label>عنوان الملاحظة</label><input id="nTitle">
+<label>الملاحظة</label><textarea id="nBody"></textarea>
 <button id="saveNote">حفظ الملاحظة</button>
-<button id="cancelNoteEdit" class="secondary hidden">إلغاء التعديل</button>
+<button id="cancelNote" class="secondary hidden">إلغاء التعديل</button>
 </div>
-<div class="toolbar">
-<input id="noteSearch" placeholder="بحث في الملاحظات">
-<button id="refreshNotesBtn" class="secondary">تحديث</button>
-</div>
-<h3>الملاحظات المسجلة</h3>
-<ul id="notesList"></ul>
+<input id="searchNotes" placeholder="بحث في الملاحظات">
+<ul id="notesTable"></ul>
 </section>
+
 </div>
 </main>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,collection,addDoc,getDocs,doc,getDoc,setDoc,updateDoc,deleteDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+ getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+ getFirestore,collection,addDoc,getDocs,doc,getDoc,setDoc,
+ updateDoc,deleteDoc,serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* إعدادات Firebase الخاصة بمشروعك */
 const firebaseConfig={
  apiKey:"AIzaSyAofpz2I1UrRacIzbrdotoVzS_XGOps7_c",
  authDomain:"accounting-management-6299b.firebaseapp.com",
@@ -241,191 +214,158 @@ const firebaseConfig={
  messagingSenderId:"649827957105",
  appId:"1:649827957105:web:3980801b3c8390c55c9ed0"
 };
+
 const ADMIN_EMAIL="mahdialalihaider2014@gmail.com".toLowerCase();
-const appFirebase=initializeApp(firebaseConfig),auth=getAuth(appFirebase),db=getFirestore(appFirebase);
-const el=id=>document.getElementById(id);
-let currentUser=null,currentProfile=null,accounts=[],vouchers=[],lists=[],notes=[];
-let editIds={account:null,voucher:null,list:null,note:null};
-const PERMISSIONS={
- accountsView:"عرض الحسابات",
- accountsAdd:"إضافة الحسابات",
- accountsEdit:"تعديل الحسابات",
- accountsDelete:"حذف الحسابات",
- vouchersView:"عرض السندات",
- vouchersAdd:"إضافة السندات",
- vouchersEdit:"تعديل السندات",
- vouchersDelete:"حذف السندات",
- listsView:"عرض القوائم",
- listsAdd:"إضافة القوائم",
- listsEdit:"تعديل القوائم",
- listsDelete:"حذف القوائم",
- notesView:"عرض الملاحظات",
- notesAdd:"إضافة الملاحظات",
- notesEdit:"تعديل الملاحظات",
- notesDelete:"حذف الملاحظات",
- exportData:"تصدير البيانات إلى Excel"
-};
 
-const DEFAULT_PERMISSIONS=Object.fromEntries(
- Object.keys(PERMISSIONS).map(k=>[
-  k,["accountsView","accountsAdd","vouchersView","vouchersAdd","listsView","listsAdd","notesView","notesAdd"].includes(k)
- ])
-);
+let appFirebase,auth,db,currentUser=null,currentProfile=null;
+let accounts=[],vouchers=[],lists=[],notes=[];
+let editing={accounts:null,vouchers:null,lists:null,notes:null};
 
-const COLLECTIONS=["accounts","vouchers","lists","notes"];
+const $=id=>document.getElementById(id);
 
-function escapeHTML(v){
+function showMessage(id,text,success=false){
+ $(id).textContent=text;
+ $(id).className=success?"message success":"message";
+}
+
+function esc(v){
  return String(v??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
  }[c]));
 }
 
-function isAdmin(){
- return !!currentUser&&(currentUser.email||"").toLowerCase()===ADMIN_EMAIL;
+function admin(){
+ return currentUser&&(currentUser.email||"").toLowerCase()===ADMIN_EMAIL;
 }
 
-function can(permission){
- return isAdmin()||currentProfile?.permissions?.[permission]===true;
+function permissions(){
+ return currentProfile?.permissions||{};
 }
 
-function message(id,text,success=false){
- el(id).textContent=text;
- el(id).className=success?"message success":"message";
+function can(key){
+ return admin()||permissions()[key]===true;
 }
 
-function setToday(id){
- const d=new Date();
- el(id).value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
-}
-
-setToday("voucherDate");
-setToday("listDate");
-
-window.showTab=id=>{
- COLLECTIONS.forEach(c=>el(c).classList.toggle("hidden",c!==id));
+const defaultPermissions={
+ accountsView:true,accountsAdd:true,accountsEdit:false,accountsDelete:false,
+ vouchersView:true,vouchersAdd:true,vouchersEdit:false,vouchersDelete:false,
+ listsView:true,listsAdd:true,listsEdit:false,listsDelete:false,
+ notesView:true,notesAdd:true,notesEdit:false,notesDelete:false,
+ exportData:false
 };
 
-function updateInterfacePermissions(){
- const viewKeys={
-  accounts:"accountsView",
-  vouchers:"vouchersView",
-  lists:"listsView",
-  notes:"notesView"
- };
+const permLabels={
+ accountsView:"عرض الحسابات",accountsAdd:"إضافة الحسابات",
+ accountsEdit:"تعديل الحسابات",accountsDelete:"حذف الحسابات",
+ vouchersView:"عرض السندات",vouchersAdd:"إضافة السندات",
+ vouchersEdit:"تعديل السندات",vouchersDelete:"حذف السندات",
+ listsView:"عرض القوائم",listsAdd:"إضافة القوائم",
+ listsEdit:"تعديل القوائم",listsDelete:"حذف القوائم",
+ notesView:"عرض الملاحظات",notesAdd:"إضافة الملاحظات",
+ notesEdit:"تعديل الملاحظات",notesDelete:"حذف الملاحظات",
+ exportData:"تصدير البيانات"
+};
 
- Object.entries(viewKeys).forEach(([section,p])=>{
-  const nav=el("nav"+section.charAt(0).toUpperCase()+section.slice(1));
-  if(nav)nav.classList.toggle("hidden",!can(p));
-  el(section).classList.toggle("hidden",!can(p));
+function today(id){
+ const d=new Date();
+ $(id).value=new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+}
+today("vDate");
+today("lDate");
+
+function setTab(tab){
+ ["accounts","vouchers","lists","notes"].forEach(id=>{
+  $(id).classList.toggle("hidden",id!==tab||!can(id+"View"));
  });
-
- const formIds={
-  accounts:"accountForm",
-  vouchers:"voucherForm",
-  lists:"listForm",
-  notes:"noteForm"
- };
-
- const addKeys={
-  accounts:"accountsAdd",
-  vouchers:"vouchersAdd",
-  lists:"listsAdd",
-  notes:"notesAdd"
- };
-
- Object.entries(formIds).forEach(([section,id])=>
-  el(id).classList.toggle(
-   "hidden",
-   !can(addKeys[section])&&!editIds[section.slice(0,-1)]
-  )
- );
-
- el("exportBtn").disabled=!can("exportData");
 }
 
-el("loginBtn").onclick=async()=>{
- const email=el("email").value.trim();
- const password=el("password").value;
+document.querySelectorAll("[data-tab]").forEach(btn=>{
+ btn.onclick=()=>setTab(btn.dataset.tab);
+});
+
+function updateUI(){
+ ["accounts","vouchers","lists","notes"].forEach(name=>{
+  const view=can(name+"View");
+  const nav=document.querySelector(`[data-tab="${name}"]`);
+  if(nav)nav.classList.toggle("hidden",!view);
+  $(name).classList.toggle("hidden",!view);
+  const form=name.slice(0,-1)+"Form";
+  if($(form))$(form).classList.toggle("hidden",!can(name+"Add")&&!editing[name]);
+ });
+
+ $("exportBtn").disabled=!can("exportData");
+}
+
+$("loginBtn").onclick=async()=>{
+ const email=$("email").value.trim();
+ const password=$("password").value;
 
  if(!email||!password){
-  message("loginMessage","يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+  showMessage("loginMessage","يرجى إدخال البريد وكلمة المرور.");
   return;
  }
 
- el("loginBtn").disabled=true;
- message("loginMessage","جارٍ تسجيل الدخول...",true);
+ $("loginBtn").disabled=true;
+ showMessage("loginMessage","جارٍ تسجيل الدخول...",true);
 
  try{
+  if(!auth)throw new Error("Firebase لم يبدأ. أعد تحميل الصفحة.");
+
   await signInWithEmailAndPassword(auth,email,password);
+
  }catch(e){
-  const map={
+  const errors={
    "auth/invalid-credential":"البريد الإلكتروني أو كلمة المرور غير صحيحة.",
    "auth/wrong-password":"كلمة المرور غير صحيحة.",
-   "auth/user-not-found":"لا يوجد حساب بهذا البريد.",
-   "auth/invalid-email":"صيغة البريد الإلكتروني غير صحيحة.",
+   "auth/user-not-found":"الحساب غير موجود.",
+   "auth/invalid-email":"صيغة البريد غير صحيحة.",
+   "auth/unauthorized-domain":"عنوان GitHub غير مسموح في Firebase.",
    "auth/too-many-requests":"محاولات كثيرة. انتظر قليلاً.",
-   "auth/network-request-failed":"تعذر الاتصال بالإنترنت.",
-   "auth/operation-not-allowed":"تسجيل الدخول بالبريد غير مفعّل.",
-   "auth/unauthorized-domain":"عنوان الموقع غير مسموح في Firebase."
+   "auth/network-request-failed":"تحقق من اتصال الإنترنت.",
+   "auth/operation-not-allowed":"فعّل Email/Password في Firebase."
   };
 
-  message("loginMessage",map[e.code]||`${e.code||"خطأ"}: ${e.message}`);
+  showMessage("loginMessage",
+   errors[e.code]||`${e.code||"خطأ"}\n${e.message||e}`);
  }finally{
-  el("loginBtn").disabled=false;
+  $("loginBtn").disabled=false;
  }
 };
 
 async function logout(){
- try{
-  await signOut(auth);
- }catch(e){
-  alert("تعذر تسجيل الخروج: "+e.message);
- }
+ try{await signOut(auth)}
+ catch(e){alert(e.message)}
 }
+$("logoutBtn").onclick=logout;
+$("pendingLogout").onclick=logout;
 
-el("logoutBtn").onclick=logout;
-el("pendingLogoutBtn").onclick=logout;
-
-async function loadOrCreateProfile(user){
+async function getProfile(user){
  const ref=doc(db,"users",user.uid);
  const snap=await getDoc(ref);
- const email=(user.email||"").toLowerCase();
 
- if(email===ADMIN_EMAIL){
+ if(admin()){
   const profile={
-   email:user.email||"",
-   name:user.displayName||"مدير النظام",
+   email:user.email,
+   name:user.displayName||"المدير",
    role:"admin",
    approved:true,
    permissions:{}
   };
-
-  await setDoc(ref,{
-   ...profile,
-   updatedAt:serverTimestamp(),
-   ...(snap.exists()?{}:{createdAt:serverTimestamp()})
-  },{merge:true});
-
+  await setDoc(ref,{...profile,updatedAt:serverTimestamp()},{merge:true});
   return profile;
  }
 
  if(!snap.exists()){
   const profile={
-   email:user.email||"",
+   email:user.email,
    name:user.displayName||"",
    role:"employee",
    approved:false,
-   permissions:{...DEFAULT_PERMISSIONS}
+   permissions:{...defaultPermissions}
   };
-
-  await setDoc(ref,{
-   ...profile,
-   createdAt:serverTimestamp()
-  });
-
+  await setDoc(ref,{...profile,createdAt:serverTimestamp()});
   return profile;
  }
-
  return snap.data();
 }
 
@@ -433,442 +373,324 @@ onAuthStateChanged(auth,async user=>{
  currentUser=user;
  currentProfile=null;
 
- el("loginCard").classList.toggle("hidden",!!user);
- el("app").classList.add("hidden");
- el("pendingCard").classList.add("hidden");
- el("adminCard").classList.add("hidden");
+ $("loginCard").classList.toggle("hidden",!!user);
+ $("app").classList.add("hidden");
+ $("pendingCard").classList.add("hidden");
+ $("adminCard").classList.add("hidden");
 
  if(!user)return;
 
- el("welcome").textContent=user.displayName||user.email||"";
- el("currentEmail").textContent=user.email||"";
+ $("currentEmail").textContent=user.email||"";
 
  try{
-  currentProfile=await loadOrCreateProfile(user);
+  currentProfile=await getProfile(user);
 
-  if(currentProfile.approved!==true){
-   el("pendingCard").classList.remove("hidden");
+  if(!admin()&&currentProfile.approved!==true){
+   $("pendingCard").classList.remove("hidden");
    return;
   }
 
-  el("app").classList.remove("hidden");
-  el("userRole").textContent=isAdmin()?"مدير النظام":"موظف";
+  $("app").classList.remove("hidden");
+  $("role").textContent=admin()?"مدير النظام":"موظف";
 
-  if(isAdmin()){
-   el("adminCard").classList.remove("hidden");
+  if(admin()){
+   $("adminCard").classList.remove("hidden");
    await loadUsers();
   }
 
-  updateInterfacePermissions();
-  await loadAllData();
+  updateUI();
+  await loadAll();
 
  }catch(e){
-  console.error(e);
-  message("loginMessage",
-   `تعذر تحميل ملف المستخدم أو البيانات.\n${e.code||""}\n${e.message}`);
+  showMessage("loginMessage",
+   "تم تسجيل الدخول لكن حدث خطأ في Firestore:\n"+
+   (e.code||"")+" "+e.message);
  }
 });
 
 async function loadUsers(){
- if(!isAdmin())return;
+ if(!admin())return;
 
- message("usersMessage","جار تحميل الموظفين...",true);
- el("usersTable").innerHTML="";
+ $("usersTable").innerHTML="";
+ showMessage("usersMessage","جار تحميل الموظفين...",true);
 
  try{
   const snap=await getDocs(collection(db,"users"));
 
-  snap.forEach(ds=>{
-   const u=ds.data();
-
+  snap.forEach(s=>{
+   const u=s.data();
    if((u.email||"").toLowerCase()===ADMIN_EMAIL)return;
 
-   const perms={...DEFAULT_PERMISSIONS,...(u.permissions||{})};
-
-   const active=Object.keys(PERMISSIONS)
-    .filter(k=>perms[k])
-    .map(k=>PERMISSIONS[k])
-    .join("، ")||"لا توجد";
-
    const tr=document.createElement("tr");
-
    tr.innerHTML=`
-    <td>${escapeHTML(u.email||"")}</td>
-    <td>${escapeHTML(u.name||"—")}</td>
-    <td>${u.approved===true?"معتمد":"بانتظار الموافقة"}</td>
-    <td>${escapeHTML(active)}</td>
-    <td>
-     <button data-user="${escapeHTML(ds.id)}" data-action="permissions">تعديل الصلاحيات</button>
-     <button class="${u.approved===true?"danger":"secondary"}"
-      data-user="${escapeHTML(ds.id)}"
-      data-action="approval">
-      ${u.approved===true?"إيقاف الحساب":"اعتماد الموظف"}
-     </button>
-    </td>`;
-
-   el("usersTable").appendChild(tr);
+   <td>${esc(u.email)}</td>
+   <td>${esc(u.name||"")}</td>
+   <td>${u.approved?"معتمد":"بانتظار الموافقة"}</td>
+   <td>
+   <button data-approve="${s.id}">${u.approved?"إيقاف":"اعتماد"}</button>
+   <button data-permissions="${s.id}" class="secondary">الصلاحيات</button>
+   </td>`;
+   $("usersTable").appendChild(tr);
   });
 
-  message("usersMessage","تم تحميل قائمة الموظفين.",true);
-
+  showMessage("usersMessage","تم تحميل الموظفين.",true);
  }catch(e){
-  message("usersMessage","تعذر تحميل الموظفين: "+e.message);
+  showMessage("usersMessage","خطأ تحميل الموظفين: "+e.message);
  }
 }
 
-el("refreshUsersBtn").onclick=loadUsers;
+$("refreshUsers").onclick=loadUsers;
 
-el("usersTable").addEventListener("click",async event=>{
- const btn=event.target.closest("button[data-user]");
-
- if(!btn||!isAdmin())return;
-
- const uid=btn.dataset.user;
- const action=btn.dataset.action;
+$("usersTable").onclick=async event=>{
+ const approve=event.target.dataset.approve;
+ const edit=event.target.dataset.permissions;
+ const uid=approve||edit;
+ if(!uid||!admin())return;
 
  try{
   const ref=doc(db,"users",uid);
   const snap=await getDoc(ref);
+  if(!snap.exists())return;
 
-  if(!snap.exists())return alert("ملف الموظف غير موجود.");
+  const data=snap.data();
 
-  const userData=snap.data();
-
-  if(action==="approval"){
-   const approved=userData.approved!==true;
-
-   if(!confirm(approved?"اعتماد هذا الموظف؟":"إيقاف حساب هذا الموظف؟"))return;
-
+  if(approve){
    await updateDoc(ref,{
-    approved,
+    approved:!data.approved,
     updatedAt:serverTimestamp()
    });
-
-   alert(approved?"تم اعتماد الموظف.":"تم إيقاف حساب الموظف.");
    await loadUsers();
    return;
   }
 
-  const perms={
-   ...DEFAULT_PERMISSIONS,
-   ...(userData.permissions||{})
-  };
+  const perms={...defaultPermissions,...(data.permissions||{})};
 
-  const form=document.createElement("div");
+  const modal=document.createElement("div");
+  modal.style="position:fixed;inset:0;background:#0008;z-index:9999;overflow:auto;padding:15px";
 
-  form.style.cssText=
-   "position:fixed;inset:0;background:#0008;z-index:9999;display:flex;align-items:center;justify-content:center;padding:12px";
+  modal.innerHTML=`
+  <div style="background:white;padding:20px;border-radius:12px;max-width:650px;margin:30px auto">
+  <h3>صلاحيات ${esc(data.email)}</h3>
+  <div id="permGrid" class="grid"></div>
+  <button id="savePerm">حفظ</button>
+  <button id="closePerm" class="secondary">إغلاق</button>
+  </div>`;
 
-  const box=document.createElement("div");
+  document.body.appendChild(modal);
 
-  box.style.cssText=
-   "background:white;border-radius:12px;padding:18px;max-width:650px;width:100%;max-height:90vh;overflow:auto";
+  const grid=modal.querySelector("#permGrid");
 
-  box.innerHTML=`
-   <h3>صلاحيات ${escapeHTML(userData.email||"الموظف")}</h3>
-   <div id="permissionOptions" class="permission-grid"></div>
-   <button id="saveUserPermissions">حفظ الصلاحيات</button>
-   <button id="closePermissionEditor" class="secondary">إلغاء</button>`;
-
-  form.appendChild(box);
-  document.body.appendChild(form);
-
-  const options=box.querySelector("#permissionOptions");
-
-  Object.entries(PERMISSIONS).forEach(([key,label])=>{
-   const lab=document.createElement("label");
-
-   lab.innerHTML=`
-    <input type="checkbox" data-perm="${key}" ${perms[key]===true?"checked":""}>
-    ${escapeHTML(label)}`;
-
-   options.appendChild(lab);
+  Object.entries(permLabels).forEach(([key,label])=>{
+   const l=document.createElement("label");
+   l.innerHTML=`<input type="checkbox" data-key="${key}" ${perms[key]?"checked":""}>${label}`;
+   grid.appendChild(l);
   });
 
-  box.querySelector("#closePermissionEditor").onclick=()=>form.remove();
+  modal.querySelector("#closePerm").onclick=()=>modal.remove();
 
-  box.querySelector("#saveUserPermissions").onclick=async()=>{
-   const newPermissions={};
-
-   options.querySelectorAll("input[data-perm]").forEach(input=>{
-    newPermissions[input.dataset.perm]=input.checked;
-   });
-
+  modal.querySelector("#savePerm").onclick=async()=>{
+   const p={};
+   grid.querySelectorAll("input").forEach(i=>p[i.dataset.key]=i.checked);
    try{
-    await updateDoc(ref,{
-     permissions:newPermissions,
-     updatedAt:serverTimestamp()
-    });
-
-    form.remove();
-    alert("تم حفظ صلاحيات الموظف.");
+    await updateDoc(ref,{permissions:p,updatedAt:serverTimestamp()});
+    modal.remove();
+    alert("تم حفظ الصلاحيات");
     await loadUsers();
-
-   }catch(err){
-    alert("تعذر حفظ الصلاحيات: "+err.message);
-   }
+   }catch(e){alert(e.message)}
   };
 
- }catch(e){
-  alert("حدث خطأ: "+e.message);
- }
-});
-
-const permissionMap={
- accounts:{
-  view:"accountsView",
-  add:"accountsAdd",
-  edit:"accountsEdit",
-  delete:"accountsDelete"
- },
- vouchers:{
-  view:"vouchersView",
-  add:"vouchersAdd",
-  edit:"vouchersEdit",
-  delete:"vouchersDelete"
- },
- lists:{
-  view:"listsView",
-  add:"listsAdd",
-  edit:"listsEdit",
-  delete:"listsDelete"
- },
- notes:{
-  view:"notesView",
-  add:"notesAdd",
-  edit:"notesEdit",
-  delete:"notesDelete"
- }
+ }catch(e){alert(e.message)}
 };
 
-function permissionFor(collectionName,action){
- return permissionMap[collectionName]?.[action];
+const collections=["accounts","vouchers","lists","notes"];
+
+async function loadCollection(name){
+ if(!can(name+"View"))return [];
+ const snap=await getDocs(collection(db,name));
+ return snap.docs.map(d=>({id:d.id,...d.data()}));
 }
 
-async function fetchCollection(name){
- if(!can(permissionFor(name,"view")))return [];
-
- const snapshot=await getDocs(collection(db,name));
-
- return snapshot.docs.map(d=>({
-  id:d.id,
-  ...d.data()
- }));
-}
-
-async function loadAllData(){
- accounts=await fetchCollection("accounts");
- vouchers=await fetchCollection("vouchers");
- lists=await fetchCollection("lists");
- notes=await fetchCollection("notes");
+async function loadAll(){
+ accounts=await loadCollection("accounts");
+ vouchers=await loadCollection("vouchers");
+ lists=await loadCollection("lists");
+ notes=await loadCollection("notes");
 
  renderAccounts();
  renderVouchers();
  renderLists();
  renderNotes();
- refreshAccountDropdowns();
+ refreshAccountsOptions();
 }
 
-function refreshAccountDropdowns(){
- const options=accounts.map(a=>
-  `<option value="${escapeHTML(a.id)}">${escapeHTML(a.name||"")}</option>`
+function refreshAccountsOptions(){
+ const opts=accounts.map(a=>
+ `<option value="${esc(a.id)}">${esc(a.name)}</option>`
  ).join("");
 
- el("voucherAccount").innerHTML=options;
- el("listAccount").innerHTML=options;
+ $("vAccount").innerHTML=opts;
+ $("lAccount").innerHTML=opts;
 }
 
-function accountTypeName(t){
+function typeName(t){
  return({
-  supplier:"مورد",
-  customer:"عميل",
-  source:"مصدر",
-  cash:"صندوق نقدي",
-  bank:"مصرف",
-  expense:"مصروفات",
-  other:"أخرى"
+ supplier:"مورد",customer:"عميل",cash:"صندوق نقدي",
+ bank:"مصرف",expense:"مصروفات",other:"أخرى"
  })[t]||t||"";
 }
 
-function rowActions(collectionName,id){
+function actions(name,id){
  let html="";
-
- if(can(permissionFor(collectionName,"edit"))){
-  html+=`<button data-edit="${escapeHTML(id)}" data-collection="${collectionName}">تعديل</button>`;
- }
-
- if(can(permissionFor(collectionName,"delete"))){
-  html+=`<button class="danger" data-delete="${escapeHTML(id)}" data-collection="${collectionName}">حذف</button>`;
- }
-
+ if(can(name+"Edit"))html+=`<button data-edit="${id}" data-col="${name}">تعديل</button>`;
+ if(can(name+"Delete"))html+=`<button class="danger" data-delete="${id}" data-col="${name}">حذف</button>`;
  return html;
 }
 
 function renderAccounts(){
- const q=el("accountSearch").value.trim().toLowerCase();
-
- el("accountsTable").innerHTML="";
+ const q=$("searchAccounts").value.toLowerCase();
+ $("accountsTable").innerHTML="";
 
  accounts.filter(a=>
-  [a.name,a.phone,a.type].join(" ").toLowerCase().includes(q)
+ [a.name,a.phone,a.type].join(" ").toLowerCase().includes(q)
  ).forEach(a=>{
   const tr=document.createElement("tr");
-
-  tr.innerHTML=`
-   <td>${escapeHTML(a.name)}</td>
-   <td>${escapeHTML(accountTypeName(a.type))}</td>
-   <td>${escapeHTML(a.phone||"")}</td>
-   <td>${escapeHTML(a.balance??0)}</td>
-   <td>${rowActions("accounts",a.id)}</td>`;
-
-  el("accountsTable").appendChild(tr);
+  tr.innerHTML=`<td>${esc(a.name)}</td><td>${esc(typeName(a.type))}</td>
+  <td>${esc(a.phone)}</td><td>${esc(a.balance)}</td>
+  <td>${actions("accounts",a.id)}</td>`;
+  $("accountsTable").appendChild(tr);
  });
 }
 
 function renderVouchers(){
- const q=el("voucherSearch").value.trim().toLowerCase();
-
- el("vouchersTable").innerHTML="";
+ const q=$("searchVouchers").value.toLowerCase();
+ $("vouchersTable").innerHTML="";
 
  vouchers.filter(v=>
-  [v.accountName,v.description,v.date,v.amount].join(" ").toLowerCase().includes(q)
+ [v.accountName,v.description,v.date,v.amount].join(" ").toLowerCase().includes(q)
  ).forEach(v=>{
   const tr=document.createElement("tr");
-
-  tr.innerHTML=`
-   <td>${v.type==="receipt"?"استلام":"دفع"}</td>
-   <td>${escapeHTML(v.accountName||"")}</td>
-   <td>${escapeHTML(v.amount??0)}</td>
-   <td>${escapeHTML(v.date||"")}</td>
-   <td>${escapeHTML(v.description||"")}</td>
-   <td>${rowActions("vouchers",v.id)}</td>`;
-
-  el("vouchersTable").appendChild(tr);
+  tr.innerHTML=`<td>${v.type==="receipt"?"استلام":"دفع"}</td>
+  <td>${esc(v.accountName)}</td><td>${esc(v.date)}</td>
+  <td>${esc(v.amount)}</td><td>${esc(v.description)}</td>
+  <td>${actions("vouchers",v.id)}</td>`;
+  $("vouchersTable").appendChild(tr);
  });
 }
 
 function renderLists(){
- const q=el("listSearch").value.trim().toLowerCase();
-
- const types={
-  incoming:"واردة",
-  outgoing:"صادرة",
-  return:"استرجاع"
- };
-
- el("listsTable").innerHTML="";
+ const q=$("searchLists").value.toLowerCase();
+ $("listsTable").innerHTML="";
 
  lists.filter(l=>
-  [l.number,l.accountName,l.date,l.description,l.amount].join(" ").toLowerCase().includes(q)
+ [l.number,l.accountName,l.date,l.description].join(" ").toLowerCase().includes(q)
  ).forEach(l=>{
   const tr=document.createElement("tr");
-
-  tr.innerHTML=`
-   <td>${escapeHTML(l.number||"")}</td>
-   <td>${escapeHTML(types[l.type]||l.type||"")}</td>
-   <td>${escapeHTML(l.accountName||"")}</td>
-   <td>${escapeHTML(l.amount??0)}</td>
-   <td>${escapeHTML(l.date||"")}</td>
-   <td>${rowActions("lists",l.id)}</td>`;
-
-  el("listsTable").appendChild(tr);
+  tr.innerHTML=`<td>${esc(l.number)}</td><td>${esc(l.type)}</td>
+  <td>${esc(l.accountName)}</td><td>${esc(l.date)}</td>
+  <td>${esc(l.amount)}</td><td>${actions("lists",l.id)}</td>`;
+  $("listsTable").appendChild(tr);
  });
 }
 
 function renderNotes(){
- const q=el("noteSearch").value.trim().toLowerCase();
-
- el("notesList").innerHTML="";
+ const q=$("searchNotes").value.toLowerCase();
+ $("notesTable").innerHTML="";
 
  notes.filter(n=>
-  [n.title,n.body].join(" ").toLowerCase().includes(q)
+ [n.title,n.body].join(" ").toLowerCase().includes(q)
  ).forEach(n=>{
   const li=document.createElement("li");
-
-  li.innerHTML=`
-   <strong>${escapeHTML(n.title||"")}</strong>
-   — ${escapeHTML(n.body||"")}
-   ${rowActions("notes",n.id)}`;
-
-  el("notesList").appendChild(li);
+  li.innerHTML=`<b>${esc(n.title)}</b> — ${esc(n.body)}
+  ${actions("notes",n.id)}`;
+  $("notesTable").appendChild(li);
  });
 }
 
-["accountSearch","voucherSearch","listSearch","noteSearch"].forEach((id,i)=>
- el(id).addEventListener("input",[
-  renderAccounts,
-  renderVouchers,
-  renderLists,
-  renderNotes
- ][i])
-);
+[
+ ["searchAccounts",renderAccounts],
+ ["searchVouchers",renderVouchers],
+ ["searchLists",renderLists],
+ ["searchNotes",renderNotes]
+].forEach(([id,fn])=>$(id).addEventListener("input",fn));
 
-function formCollectionKey(name){
- return({
-  accounts:"account",
-  vouchers:"voucher",
-  lists:"list",
-  notes:"note"
- })[name];
-}
+const formFields={
+ accounts:{
+  aName:"name",aType:"type",aPhone:"phone",aBalance:"balance",aNotes:"notes"
+ },
+ vouchers:{
+  vType:"type",vAccount:"accountId",vDate:"date",vAmount:"amount",
+  vMethod:"method",vDescription:"description",vNotes:"notes"
+ },
+ lists:{
+  lType:"type",lNumber:"number",lAccount:"accountId",lDate:"date",
+  lAmount:"amount",lDescription:"description",lNotes:"notes"
+ },
+ notes:{nTitle:"title",nBody:"body"}
+};
+
+const formNames={
+ accounts:"account",vouchers:"voucher",lists:"list",notes:"note"
+};
+
+const saveButtons={
+ accounts:"saveAccount",vouchers:"saveVoucher",
+ lists:"saveList",notes:"saveNote"
+};
+
+const cancelButtons={
+ accounts:"cancelAccount",vouchers:"cancelVoucher",
+ lists:"cancelList",notes:"cancelNote"
+};
 
 function resetForm(name){
- editIds[formCollectionKey(name)]=null;
+ editing[name]=null;
 
- const fields={
-  accounts:["accountName","accountPhone","accountNotes"],
-  vouchers:["voucherAmount","voucherDescription","voucherNotes"],
-  lists:["listNumber","listAmount","listDescription","listNotes"],
-  notes:["noteTitle","noteText"]
- };
+ Object.keys(formFields[name]).forEach(id=>$(id).value="");
 
- fields[name].forEach(id=>el(id).value="");
+ if(name==="accounts")$("aBalance").value="0";
 
- if(name==="accounts")el("accountBalance").value="0";
+ if(name==="vouchers")today("vDate");
+ if(name==="lists")today("lDate");
 
- const cancel={
-  accounts:"cancelAccountEdit",
-  vouchers:"cancelVoucherEdit",
-  lists:"cancelListEdit",
-  notes:"cancelNoteEdit"
- };
+ $(cancelButtons[name]).classList.add("hidden");
+ $(saveButtons[name]).textContent={
+ accounts:"حفظ الحساب",vouchers:"حفظ السند",
+ lists:"حفظ القائمة",notes:"حفظ الملاحظة"
+ }[name];
 
- el(cancel[name]).classList.add("hidden");
-
- updateInterfacePermissions();
+ updateUI();
 }
 
+Object.entries(cancelButtons).forEach(([name,id])=>{
+ $(id).onclick=()=>resetForm(name);
+});
+
 async function saveRecord(name,data){
- const key=formCollectionKey(name);
- const id=editIds[key];
+ const id=editing[name];
+ const permission=id?name+"Edit":name+"Add";
 
- const button=el({
-  accounts:"saveAccount",
-  vouchers:"saveVoucher",
-  lists:"saveList",
-  notes:"saveNote"
- }[name]);
+ if(!can(permission)){
+  alert("ليس لديك صلاحية تنفيذ هذه العملية.");
+  return;
+ }
 
+ const button=$(saveButtons[name]);
  button.disabled=true;
 
  try{
   if(id){
    await updateDoc(doc(db,name,id),{
-    ...data,
-    updatedAt:serverTimestamp()
+    ...data,updatedAt:serverTimestamp()
    });
   }else{
    await addDoc(collection(db,name),{
-    ...data,
-    createdBy:currentUser.uid,
-    createdAt:serverTimestamp()
+    ...data,createdBy:currentUser.uid,createdAt:serverTimestamp()
    });
   }
 
-  alert(id?"تم تعديل السجل بنجاح.":"تم حفظ السجل بنجاح.");
-
   resetForm(name);
-  await loadAllData();
+  await loadAll();
+  alert("تم الحفظ بنجاح.");
 
  }catch(e){
   alert("تعذر الحفظ:\n"+e.message);
@@ -877,216 +699,113 @@ async function saveRecord(name,data){
  }
 }
 
-el("saveAccount").onclick=()=>{
- if(!can("accountsAdd")&&!editIds.account){
-  return alert("ليس لديك صلاحية إضافة الحسابات.");
- }
-
- const name=el("accountName").value.trim();
+$("saveAccount").onclick=()=>{
+ const name=$("aName").value.trim();
+ const balance=Number($("aBalance").value||0);
 
  if(!name)return alert("أدخل اسم الحساب.");
-
- const balance=Number(el("accountBalance").value||0);
-
  if(!Number.isFinite(balance))return alert("الرصيد غير صحيح.");
 
  saveRecord("accounts",{
-  name,
-  type:el("accountType").value,
-  phone:el("accountPhone").value.trim(),
-  balance,
-  notes:el("accountNotes").value.trim()
+  name,type:$("aType").value,
+  phone:$("aPhone").value.trim(),
+  balance,notes:$("aNotes").value.trim()
  });
 };
 
-el("saveVoucher").onclick=()=>{
- if(!can("vouchersAdd")&&!editIds.voucher){
-  return alert("ليس لديك صلاحية إضافة السندات.");
- }
-
- const amount=Number(el("voucherAmount").value);
- const accountId=el("voucherAccount").value;
-
- if(!accountId||!Number.isFinite(amount)||amount<=0){
-  return alert("اختر حساباً وأدخل مبلغاً صحيحاً.");
- }
-
+$("saveVoucher").onclick=()=>{
+ const accountId=$("vAccount").value;
  const account=accounts.find(a=>a.id===accountId);
+ const amount=Number($("vAmount").value);
+
+ if(!accountId)return alert("اختر الحساب.");
+ if(!Number.isFinite(amount)||amount<=0)return alert("أدخل مبلغاً صحيحاً.");
 
  saveRecord("vouchers",{
-  type:el("voucherType").value,
-  accountId,
-  accountName:account?.name||"",
-  date:el("voucherDate").value,
-  amount,
-  method:el("voucherMethod").value,
-  description:el("voucherDescription").value.trim(),
-  notes:el("voucherNotes").value.trim()
+  type:$("vType").value,
+  accountId,accountName:account?.name||"",
+  date:$("vDate").value,amount,
+  method:$("vMethod").value,
+  description:$("vDescription").value.trim(),
+  notes:$("vNotes").value.trim()
  });
 };
 
-el("saveList").onclick=()=>{
- if(!can("listsAdd")&&!editIds.list){
-  return alert("ليس لديك صلاحية إضافة القوائم.");
- }
-
- const number=el("listNumber").value.trim();
- const accountId=el("listAccount").value;
- const amount=Number(el("listAmount").value||0);
-
- if(!number||!accountId||!Number.isFinite(amount)||amount<0){
-  return alert("أدخل رقم القائمة والحساب والمبلغ الصحيح.");
- }
-
+$("saveList").onclick=()=>{
+ const accountId=$("lAccount").value;
  const account=accounts.find(a=>a.id===accountId);
+ const number=$("lNumber").value.trim();
+ const amount=Number($("lAmount").value||0);
+
+ if(!number||!accountId)return alert("أدخل رقم القائمة واختر الحساب.");
+ if(!Number.isFinite(amount)||amount<0)return alert("المبلغ غير صحيح.");
 
  saveRecord("lists",{
-  type:el("listType").value,
-  number,
-  accountId,
+  type:$("lType").value,number,accountId,
   accountName:account?.name||"",
-  date:el("listDate").value,
-  amount,
-  description:el("listDescription").value.trim(),
-  notes:el("listNotes").value.trim()
+  date:$("lDate").value,amount,
+  description:$("lDescription").value.trim(),
+  notes:$("lNotes").value.trim()
  });
 };
 
-el("saveNote").onclick=()=>{
- if(!can("notesAdd")&&!editIds.note){
-  return alert("ليس لديك صلاحية إضافة الملاحظات.");
- }
+$("saveNote").onclick=()=>{
+ const title=$("nTitle").value.trim();
+ const body=$("nBody").value.trim();
 
- const title=el("noteTitle").value.trim();
- const body=el("noteText").value.trim();
-
- if(!title&&!body){
-  return alert("أدخل عنوان الملاحظة أو نصها.");
- }
+ if(!title&&!body)return alert("أدخل عنواناً أو ملاحظة.");
 
  saveRecord("notes",{title,body});
 };
 
-const cancelButtons={
- accounts:"cancelAccountEdit",
- vouchers:"cancelVoucherEdit",
- lists:"cancelListEdit",
- notes:"cancelNoteEdit"
-};
-
-Object.entries(cancelButtons).forEach(([name,id])=>
- el(id).onclick=()=>resetForm(name)
-);
-
-document.body.addEventListener("click",async event=>{
- const btn=event.target.closest("button[data-edit],button[data-delete]");
-
+document.body.addEventListener("click",async e=>{
+ const btn=e.target.closest("[data-edit],[data-delete]");
  if(!btn)return;
 
- const collectionName=btn.dataset.collection;
+ const name=btn.dataset.col;
  const id=btn.dataset.edit||btn.dataset.delete;
- const key=formCollectionKey(collectionName);
 
  if(btn.dataset.delete){
-  if(!can(permissionFor(collectionName,"delete"))){
-   return alert("ليس لديك صلاحية الحذف.");
-  }
-
-  if(!confirm("هل تريد حذف هذا السجل نهائياً؟"))return;
+  if(!can(name+"Delete"))return alert("لا توجد صلاحية للحذف.");
+  if(!confirm("هل تريد حذف هذا السجل؟"))return;
 
   try{
-   await deleteDoc(doc(db,collectionName,id));
-   await loadAllData();
-  }catch(e){
-   alert("تعذر الحذف: "+e.message);
-  }
-
+   await deleteDoc(doc(db,name,id));
+   await loadAll();
+  }catch(err){alert(err.message)}
   return;
  }
 
- if(!can(permissionFor(collectionName,"edit"))){
-  return alert("ليس لديك صلاحية التعديل.");
- }
+ if(!can(name+"Edit"))return alert("لا توجد صلاحية للتعديل.");
 
- const record=({accounts,vouchers,lists,notes})[collectionName].find(x=>x.id===id);
+ const data=({accounts,vouchers,lists,notes})[name].find(x=>x.id===id);
+ if(!data)return;
 
- if(!record)return;
+ editing[name]=id;
 
- editIds[key]=id;
-
- const fields={
-  accounts:{
-   accountName:"name",
-   accountType:"type",
-   accountPhone:"phone",
-   accountBalance:"balance",
-   accountNotes:"notes"
-  },
-  vouchers:{
-   voucherType:"type",
-   voucherAccount:"accountId",
-   voucherDate:"date",
-   voucherAmount:"amount",
-   voucherMethod:"method",
-   voucherDescription:"description",
-   voucherNotes:"notes"
-  },
-  lists:{
-   listType:"type",
-   listNumber:"number",
-   listAccount:"accountId",
-   listDate:"date",
-   listAmount:"amount",
-   listDescription:"description",
-   listNotes:"notes"
-  },
-  notes:{
-   noteTitle:"title",
-   noteText:"body"
-  }
- };
-
- Object.entries(fields[collectionName]).forEach(([input,field])=>{
-  el(input).value=record[field]??"";
+ Object.entries(formFields[name]).forEach(([input,field])=>{
+  $(input).value=data[field]??"";
  });
 
- el(cancelButtons[collectionName]).classList.remove("hidden");
+ $(cancelButtons[name]).classList.remove("hidden");
+ $(saveButtons[name]).textContent="حفظ التعديلات";
 
- el({
-  accounts:"saveAccount",
-  vouchers:"saveVoucher",
-  lists:"saveList",
-  notes:"saveNote"
- }[collectionName]).textContent="حفظ التعديلات";
-
- window.showTab(collectionName);
- updateInterfacePermissions();
+ setTab(name);
+ updateUI();
 });
 
-[
- "refreshAccountsBtn",
- "refreshVouchersBtn",
- "refreshListsBtn",
- "refreshNotesBtn"
-].forEach(id=>el(id).onclick=loadAllData);
-
-function csvCell(value){
- return '"'+String(value??"").replace(/"/g,'""')+'"';
+function csvCell(v){
+ return '"'+String(v??"").replace(/"/g,'""')+'"';
 }
 
 function downloadCSV(filename,rows){
- const csv="\uFEFF"+rows.map(row=>row.map(csvCell).join(",")).join("\r\n");
-
- const blob=new Blob([csv],{
-  type:"text/csv;charset=utf-8"
- });
-
+ const csv="\uFEFF"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n");
+ const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
  const url=URL.createObjectURL(blob);
  const a=document.createElement("a");
 
  a.href=url;
  a.download=filename;
-
  document.body.appendChild(a);
  a.click();
  a.remove();
@@ -1094,98 +813,68 @@ function downloadCSV(filename,rows){
  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-el("exportBtn").onclick=()=>{
- if(!can("exportData")){
-  return alert("ليس لديك صلاحية التصدير.");
- }
+$("exportBtn").onclick=()=>{
+ if(!can("exportData"))return alert("لا توجد صلاحية للتصدير.");
 
- const from=el("exportFrom").value;
- const to=el("exportTo").value;
+ const from=$("exportFrom").value;
+ const to=$("exportTo").value;
 
- if(from&&to&&from>to){
-  return alert("تاريخ البداية يجب أن يكون قبل تاريخ النهاية.");
- }
+ if(from&&to&&from>to)return alert("تاريخ البداية أكبر من النهاية.");
 
- const inRange=item=>{
-  const d=item.date||"";
+ const inRange=x=>{
+  const d=x.date||"";
   return(!from||!d||d>=from)&&(!to||!d||d<=to);
  };
 
- const sheets=[];
-
- if(el("exportAccounts").checked){
-  sheets.push(["الحسابات",[
-   ["اسم الحساب","النوع","الهاتف","الرصيد الافتتاحي","ملاحظات"],
-   ...accounts.map(a=>[
-    a.name,
-    accountTypeName(a.type),
-    a.phone,
-    a.balance,
-    a.notes
-   ])
-  ]]);
- }
-
- if(el("exportVouchers").checked){
-  sheets.push(["السندات",[
-   ["نوع السند","الحساب","التاريخ","المبلغ","طريقة الدفع","البيان","ملاحظات"],
-   ...vouchers.filter(inRange).map(v=>[
-    v.type==="receipt"?"استلام":"دفع",
-    v.accountName,
-    v.date,
-    v.amount,
-    v.method,
-    v.description,
-    v.notes
-   ])
-  ]]);
- }
-
- if(el("exportLists").checked){
-  sheets.push(["القوائم",[
-   ["رقم القائمة","النوع","الحساب","التاريخ","المبلغ","البيان","ملاحظات"],
-   ...lists.filter(inRange).map(l=>[
-    l.number,
-    ({incoming:"واردة",outgoing:"صادرة",return:"استرجاع"})[l.type]||l.type,
-    l.accountName,
-    l.date,
-    l.amount,
-    l.description,
-    l.notes
-   ])
-  ]]);
- }
-
- if(el("exportNotes").checked){
-  sheets.push(["الملاحظات",[
-   ["عنوان الملاحظة","النص"],
-   ...notes.map(n=>[n.title,n.body])
-  ]]);
- }
-
- if(!sheets.length){
-  return alert("حدد نوع بيانات واحداً على الأقل.");
- }
-
  const rows=[];
 
- sheets.forEach((sheet,i)=>{
-  if(i)rows.push([]);
-  rows.push([sheet[0]]);
-  rows.push(...sheet[1]);
- });
+ if($("exAccounts").checked){
+  rows.push(["الحسابات"]);
+  rows.push(["الاسم","النوع","الهاتف","الرصيد","ملاحظات"]);
+  accounts.forEach(a=>rows.push([a.name,typeName(a.type),a.phone,a.balance,a.notes]));
+ }
 
- const filename=
-  "pharmacy-accounting-"+new Date().toISOString().slice(0,10)+".csv";
+ if($("exVouchers").checked){
+  rows.push([]);
+  rows.push(["السندات"]);
+  rows.push(["النوع","الحساب","التاريخ","المبلغ","طريقة الدفع","البيان"]);
+  vouchers.filter(inRange).forEach(v=>rows.push([
+   v.type==="receipt"?"استلام":"دفع",
+   v.accountName,v.date,v.amount,v.method,v.description
+  ]));
+ }
 
- downloadCSV(filename,rows);
+ if($("exLists").checked){
+  rows.push([]);
+  rows.push(["القوائم"]);
+  rows.push(["رقم القائمة","النوع","الحساب","التاريخ","المبلغ","البيان"]);
+  lists.filter(inRange).forEach(l=>rows.push([
+   l.number,l.type,l.accountName,l.date,l.amount,l.description
+  ]));
+ }
 
- message(
-  "exportMessage",
-  "تم تنزيل ملف CSV. افتحه باستخدام Excel ثم يمكنك حفظه بصيغة XLSX.",
-  true
- };
+ if($("exNotes").checked){
+  rows.push([]);
+  rows.push(["الملاحظات"]);
+  rows.push(["العنوان","النص"]);
+  notes.forEach(n=>rows.push([n.title,n.body]));
+ }
+
+ if(!rows.length)return alert("حدد بيانات للتصدير.");
+
+ downloadCSV("pharmacy-accounting.csv",rows);
+ showMessage("exportMessage","تم تنزيل الملف. افتحه في Excel ثم احفظه بصيغة XLSX.",true);
+};
+
+/* بدء Firebase وعرض أخطاء التهيئة */
+try{
+ appFirebase=initializeApp(firebaseConfig);
+ auth=getAuth(appFirebase);
+ db=getFirestore(appFirebase);
+}catch(e){
+ showMessage("loginMessage","خطأ في تشغيل Firebase:\n"+e.message);
+ $("loginBtn").disabled=true;
+}
 </script>
 </body>
-</html>    
-
+</html>
